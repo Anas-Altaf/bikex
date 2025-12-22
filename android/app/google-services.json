@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "357073663430",
+    "project_id": "bikex-flutter-app",
+    "storage_bucket": "bikex-flutter-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357073663430:android:36024fb87f293e5517aec7",
+        "android_client_info": {
+          "package_name": "com.anas.bikex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB8ySnKqc2kWjOgdz_Zf_i7gSarKrZljQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357073663430:android:28e2610eed59cf7817aec7",
+        "android_client_info": {
+          "package_name": "com.anas.bikex.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB8ySnKqc2kWjOgdz_Zf_i7gSarKrZljQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357073663430:android:9ae9af4c3991249a17aec7",
+        "android_client_info": {
+          "package_name": "com.anas.bikex.stg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB8ySnKqc2kWjOgdz_Zf_i7gSarKrZljQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
