@@ -1,6 +1,5 @@
-import 'package:asra_ai/all_chats/all_chats.dart';
-import 'package:asra_ai/auth/auth.dart';
-import 'package:asra_ai/l10n/gen/app_localizations.dart';
+import 'package:bikex/auth/auth.dart';
+import 'package:bikex/l10n/gen/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,13 +22,21 @@ class AppView extends StatelessWidget {
           AuthUnknown() => const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           ),
-          AuthAuthenticated(user: final user) => AllChatsPage(
-            userId: user.id,
-            username: user.email,
+          AuthAuthenticated(user: final user) => Scaffold(
+            appBar: AppBar(
+              title: Text('Welcome, ${user.name}'),
+              actions: [
+                IconButton(
+                  onPressed: () => context.read<AuthCubit>().signOut(),
+                  icon: const Icon(Icons.logout),
+                ),
+              ],
+            ),
+            body: const Center(
+              child: Text('BikeX - Coming Soon'),
+            ),
           ),
-          AuthUnauthenticated() => const Scaffold(
-            body: Center(child: Text('Please sign in.')),
-          ),
+          AuthUnauthenticated() => const LoginPage(),
           AuthError(message: final message) => Scaffold(
             body: Center(child: Text('Error: $message')),
           ),

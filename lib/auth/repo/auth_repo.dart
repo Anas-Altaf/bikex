@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:asra_ai/auth/models/models.dart';
+import 'package:bikex/auth/models/models.dart';
 
 class AuthRepo {
   AuthRepo() {

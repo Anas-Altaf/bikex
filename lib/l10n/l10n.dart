@@ -1,7 +1,7 @@
-import 'package:asra_ai/l10n/gen/app_localizations.dart';
+import 'package:bikex/l10n/gen/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 
-export 'package:asra_ai/l10n/gen/app_localizations.dart';
+export 'package:bikex/l10n/gen/app_localizations.dart';
 
 extension AppLocalizationsX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);

@@ -1,4 +1,4 @@
-import 'package:asra_ai/auth/models/models.dart';
+import 'package:bikex/auth/models/models.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class AuthState extends Equatable {

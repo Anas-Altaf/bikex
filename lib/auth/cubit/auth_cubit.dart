@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:asra_ai/auth/auth.dart';
+import 'package:bikex/auth/auth.dart';
 import 'package:bloc/bloc.dart';
 
 class AuthCubit extends Cubit<AuthState> {
