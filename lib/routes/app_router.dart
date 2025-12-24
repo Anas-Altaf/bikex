@@ -29,7 +29,8 @@ class AppRouter {
 
   String? _redirect(BuildContext context, GoRouterState state) {
     final authState = authCubit.state;
-    final isOnAuthPage = state.matchedLocation == AppRoutes.login ||
+    final isOnAuthPage =
+        state.matchedLocation == AppRoutes.login ||
         state.matchedLocation == AppRoutes.signup;
     final isOnSplash = state.matchedLocation == AppRoutes.splash;
 
@@ -54,27 +55,27 @@ class AppRouter {
   }
 
   List<RouteBase> get _routes => [
-        GoRoute(
-          path: AppRoutes.splash,
-          name: 'splash',
-          builder: (context, state) => const SplashPage(),
-        ),
-        GoRoute(
-          path: AppRoutes.login,
-          name: 'login',
-          builder: (context, state) => const LoginPage(),
-        ),
-        GoRoute(
-          path: AppRoutes.signup,
-          name: 'signup',
-          builder: (context, state) => const SignupPage(),
-        ),
-        GoRoute(
-          path: AppRoutes.home,
-          name: 'home',
-          builder: (context, state) => const HomePage(),
-        ),
-      ];
+    GoRoute(
+      path: AppRoutes.splash,
+      name: 'splash',
+      builder: (context, state) => const SplashPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.login,
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.signup,
+      name: 'signup',
+      builder: (context, state) => const SignupPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.home,
+      name: 'home',
+      builder: (context, state) => const HomePage(),
+    ),
+  ];
 }
 
 /// Helper class to convert Stream to Listenable for GoRouter refresh

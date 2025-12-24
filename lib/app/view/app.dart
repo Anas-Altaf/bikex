@@ -1,4 +1,5 @@
 import 'package:bikex/auth/auth.dart';
+import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/l10n/l10n.dart';
 import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,8 @@ class _AppViewState extends State<AppView> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.backgroundColor),
+        fontFamily: 'Poppins',
         useMaterial3: true,
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,

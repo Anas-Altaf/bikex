@@ -1,72 +1,81 @@
-import 'package:bikex/auth/auth.dart';
+import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/cart/cart.dart';
+import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/widgets/primary_icon_btn.dart';
+import 'package:bikex/map/map.dart';
+import 'package:bikex/navigation/navigation.dart';
+import 'package:bikex/orders/orders.dart';
+import 'package:bikex/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  static const List<Widget> _screens = [
+    BikesPage(),
+    MapPage(),
+    CartPage(),
+    ProfilePage(),
+    OrdersPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, state) {
-        final user = state is AuthAuthenticated ? state.user : null;
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Welcome${user != null ? ", ${user.name}" : ""}'),
-            actions: [
-              IconButton(
-                onPressed: () => context.read<AuthCubit>().signOut(),
-                icon: const Icon(Icons.logout),
-                tooltip: 'Sign Out',
+    return BlocProvider(
+      create: (_) => NavigationCubit(),
+      child: BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Container(
+                color: AppTheme.backgroundColor,
+              ),
+              Container(
+                transform: Matrix4.translationValues(0, 110, 0),
+                child: SvgPicture.asset(
+                  'assets/bg/background_shape.svg',
+                  fit: BoxFit.fitWidth,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Scaffold(
+                backgroundColor: AppTheme.transparentColor,
+                appBar: appBar(),
+                body: SafeArea(
+                  child: _screens[state.currentIndex],
+                ),
+                bottomNavigationBar: const BottomTabBar(),
               ),
             ],
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.pedal_bike,
-                  size: 100,
-                  color: Colors.blue,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'BikeX',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Buy the best bikes',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 32),
-                if (user != null)
-                  Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Logged in as',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            user.email,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+          );
+        },
+      ),
+    );
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      title: const Text(
+        'Choose Your Bike',
+        style: TextStyle(
+          color: AppTheme.textColor,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      actions: [
+        PrimaryIconBtn(
+          assetName: 'assets/icons/bolt.svg',
+          gradient: AppTheme.primaryGradient,
+          onTap: () {
+            //TODO: Implement search functionality
+          },
+        ),
+      ],
+      backgroundColor: AppTheme.backgroundColor,
+      elevation: 0,
     );
   }
 }

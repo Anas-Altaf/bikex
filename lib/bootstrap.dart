@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'package:bikex/firebase_options.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -23,6 +24,13 @@ class AppBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // background
+      statusBarIconBrightness: Brightness.light, // Android icons
+      statusBarBrightness: Brightness.light, // iOS icons
+    ),
+  );
   // 1. Initialize Flutter binding
   WidgetsFlutterBinding.ensureInitialized();
   FlutterError.onError = (details) {

@@ -9,39 +9,52 @@ class AppTheme {
   static const Color textColor = Color(0xFFFFFFFF);
   static const Color textDescColor = Color.fromARGB(153, 255, 255, 255);
   static const Color shadowColor = Color(0xFF10141C);
+
+  // transparent color
+  static const Color transparentColor = Colors.transparent;
   //gradient colors
-  static LinearGradient tabBarGradient = const LinearGradient(
-    // The visual slider in the image suggests a Left-to-Right or Top-to-Bottom flow.
-    // Adjust 'begin' and 'end' to match your specific layout direction.
+  static LinearGradient tabBarGradient = LinearGradient(
+    // Gradient flows from top-left to bottom-right.
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
 
     // Stop positions (0% and 100%)
-    stops: [0.0, 1.0],
+    stops: const [0.0, 1.0, 1.0],
 
     colors: [
-      Color(0xFF363E51), // Hex: #363E51
-      Color(0xFF181C24), // Hex: #181C24
+      const Color(0xFF3B49A5),
+      const Color(0xFF363E51).withAlpha(200),
+      const Color(0xFF3943A1).withAlpha(200),
     ],
-  ).withOpacity(0.4);
+  );
 
   // primary gradient
   static LinearGradient primaryGradient = const LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
     colors: [
-      Color(0xFF34C8E8), // Hex: #37B6E9
-      Color(0xFF4E4AF2), // Hex: #4B4CED
+      Color(0xFF34C8E8),
+      Color(0xFF4E4AF2),
     ],
-  ).withOpacity(0.6);
+  ).withOpacity(0.8);
 
   // primary card gradient
   static LinearGradient primaryCardGradient = const LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFF363E51), // Hex: #37B6E9
-      Color(0xFF191E26), // Hex: #4B4CED
+      Color(0xFF363E51),
+      Color(0xFF191E26),
     ],
   ).withOpacity(0.2);
+
+  // secondary card gradient
+  static LinearGradient secondaryCardGradient = const LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF353F54),
+      Color(0xFF222834),
+    ],
+  );
 }
