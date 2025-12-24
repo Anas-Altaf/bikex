@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
       ),
       actions: [
         PrimaryIconBtn(
-          assetName: 'assets/icons/bolt.svg',
+          assetName: 'assets/icons/search.svg',
           gradient: AppTheme.primaryGradient,
           onTap: () {
             //TODO: Implement search functionality

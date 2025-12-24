@@ -57,7 +57,7 @@ class LadderRow extends StatelessWidget {
                 : PrimaryIconBtn(
                     assetName: 'assets/icons/$item.svg',
                     gradient: AppTheme.secondaryCardGradient,
-                    iconColor: Colors.white,
+                    iconColor: AppTheme.textDescColor,
                     iconWidth: 28,
                     iconHeight: 28,
 
