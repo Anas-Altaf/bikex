@@ -41,6 +41,7 @@ class LadderRow extends StatelessWidget {
             ),
             child: index == 0
                 ? PrimaryIconBtn(
+                    // isSelected: true,
                     replacedWidget: const Padding(
                       padding: EdgeInsets.all(4),
                       child: Text(

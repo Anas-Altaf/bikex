@@ -13,7 +13,9 @@ class PrimaryIconBtn extends StatelessWidget {
     this.iconWidth,
     this.iconHeight,
     this.replacedWidget,
+    this.isSelected = false,
   });
+
   final VoidCallback? onTap;
   final String? assetName;
   final Color? backgroundColor;
@@ -23,7 +25,7 @@ class PrimaryIconBtn extends StatelessWidget {
   final double? iconWidth;
   final double? iconHeight;
   final Widget? replacedWidget;
-  final bool isSelected = false;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +34,7 @@ class PrimaryIconBtn extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: backgroundColor,
-        gradient:
-            gradient ??
-            (isSelected
-                ? AppTheme.primaryGradient
-                : AppTheme.primaryCardGradient),
+        gradient: isSelected ? AppTheme.primaryGradient : gradient,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Colors.white.withAlpha(10),
