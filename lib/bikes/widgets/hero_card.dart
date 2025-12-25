@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:bikex/bikes/widgets/diagonal_card_clipper.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class HeroCard extends StatelessWidget {
   const HeroCard({super.key});
@@ -21,12 +20,12 @@ class HeroCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: AppTheme.primaryCardGradient,
               border: Border.all(
-                color: Colors.white.withOpacity(0.18),
+                color: Colors.white.withAlpha(40),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.35),
+                  color: Colors.black.withAlpha(89),
                   blurRadius: 25,
                   offset: const Offset(0, 12),
                 ),
@@ -37,10 +36,9 @@ class HeroCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    'assets/images/cycle_01.svg',
-                    width: 40,
-                    height: 40,
+                  Image.asset(
+                    'assets/images/cycle_01.png',
+                    // width: 220,
                   ),
                   const Spacer(),
                   const Text(

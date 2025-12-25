@@ -1,6 +1,7 @@
-import 'package:bikex/bikes/widgets/diagonal_card_clipper.dart';
 import 'package:bikex/bikes/widgets/hero_card.dart';
 import 'package:bikex/bikes/widgets/ladder_row.dart';
+import 'package:bikex/bikes/widgets/product_card.dart';
+import 'package:bikex/bikes/widgets/products_list.dart';
 import 'package:flutter/material.dart';
 
 class BikesPage extends StatelessWidget {
@@ -8,10 +9,11 @@ class BikesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const HeroCard(),
-        LadderRow(),
+    return CustomScrollView(
+      slivers: [
+        const SliverToBoxAdapter(child: HeroCard()),
+        SliverToBoxAdapter(child: LadderRow()),
+        ProductsList(),
       ],
     );
   }

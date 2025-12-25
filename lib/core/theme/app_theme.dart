@@ -23,8 +23,8 @@ class AppTheme {
 
     colors: [
       const Color(0xFF3B49A5),
-      const Color(0xFF363E51).withAlpha(200),
-      const Color(0xFF3943A1).withAlpha(200),
+      const Color(0xFF363E51),
+      const Color(0xFF3B49A5),
     ],
   );
 

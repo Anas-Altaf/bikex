@@ -45,9 +45,20 @@ class HomePage extends StatelessWidget {
                 backgroundColor: AppTheme.transparentColor,
                 appBar: appBar(),
                 body: SafeArea(
-                  child: _screens[state.currentIndex],
+                  top: false,
+                  child: Stack(
+                    children: [
+                      _screens[state.currentIndex],
+                      const Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: BottomTabBar(),
+                      ),
+                    ],
+                  ),
                 ),
-                bottomNavigationBar: const BottomTabBar(),
+                // bottomNavigationBar: const BottomTabBar(),
               ),
             ],
           );
