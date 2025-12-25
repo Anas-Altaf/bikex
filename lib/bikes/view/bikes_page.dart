@@ -1,5 +1,6 @@
-import 'package:bikex/core/theme/app_theme.dart';
-import 'package:bikex/core/widgets/primary_icon_btn.dart';
+import 'package:bikex/bikes/widgets/diagonal_card_clipper.dart';
+import 'package:bikex/bikes/widgets/hero_card.dart';
+import 'package:bikex/bikes/widgets/ladder_row.dart';
 import 'package:flutter/material.dart';
 
 class BikesPage extends StatelessWidget {
@@ -7,66 +8,11 @@ class BikesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: LadderRow(),
-    );
-  }
-}
-
-class LadderRow extends StatelessWidget {
-  LadderRow({super.key});
-
-  // 1. You just provide the list of icons/widgets
-  final items = [
-    'all',
-    'bolt',
-    'sterring',
-    'rects',
-    'helmet',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items.map((item) {
-          final index = items.indexOf(item);
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: index * 15.0, // The "Step" height
-              // left: 5, // Spacing between items
-            ),
-            child: index == 0
-                ? PrimaryIconBtn(
-                    // isSelected: true,
-                    replacedWidget: const Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Text(
-                        'All',
-                        style: TextStyle(
-                          color: AppTheme.textDescColor,
-                          // fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    gradient: AppTheme.secondaryCardGradient,
-                  )
-                : PrimaryIconBtn(
-                    assetName: 'assets/icons/$item.svg',
-                    gradient: AppTheme.secondaryCardGradient,
-                    iconColor: AppTheme.textDescColor,
-                    iconWidth: 28,
-                    iconHeight: 28,
-
-                    onTap: () {},
-                  ),
-          );
-        }).toList(),
-      ),
+    return ListView(
+      children: [
+        const HeroCard(),
+        LadderRow(),
+      ],
     );
   }
 }

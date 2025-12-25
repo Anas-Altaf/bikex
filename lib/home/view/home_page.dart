@@ -66,12 +66,15 @@ class HomePage extends StatelessWidget {
         ),
       ),
       actions: [
-        PrimaryIconBtn(
-          assetName: 'assets/icons/search.svg',
-          gradient: AppTheme.primaryGradient,
-          onTap: () {
-            //TODO: Implement search functionality
-          },
+        Padding(
+          padding: .only(right: 14),
+          child: PrimaryIconBtn(
+            assetName: 'assets/icons/search.svg',
+            gradient: AppTheme.primaryGradient,
+            onTap: () {
+              //TODO: Implement search functionality
+            },
+          ),
         ),
       ],
       backgroundColor: AppTheme.backgroundColor,

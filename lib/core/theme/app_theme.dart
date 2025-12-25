@@ -46,7 +46,7 @@ class AppTheme {
       Color(0xFF363E51),
       Color(0xFF191E26),
     ],
-  ).withOpacity(0.2);
+  ).withOpacity(0.8);
 
   // secondary card gradient
   static LinearGradient secondaryCardGradient = const LinearGradient(
