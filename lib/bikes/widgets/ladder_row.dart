@@ -16,7 +16,8 @@ class LadderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      transform: Matrix4.translationValues(0, -10, 0),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -25,7 +26,7 @@ class LadderRow extends StatelessWidget {
           final index = items.indexOf(item);
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index * 15.0, // The "Step" height
+              bottom: index * 12.0, // The "Step" height
               // left: 5, // Spacing between items
             ),
             child: index == 0

@@ -29,37 +29,44 @@ class PrimaryIconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        gradient: isSelected ? AppTheme.primaryGradient : gradient,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.white.withAlpha(10),
-        ),
-        boxShadow: const [
-          BoxShadow(
-            offset: Offset(0, 0.2),
-            blurRadius: 10,
-            color: Colors.black26,
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: assetName == null
-            ? replacedWidget
-            : SvgPicture.asset(
-                assetName!,
-                width: iconWidth ?? 24,
-                height: iconHeight ?? 24,
-                colorFilter: iconColor != null
-                    ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-                    : null,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: AppTheme.primaryBlurFilter,
+
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            gradient: isSelected ? AppTheme.primaryGradient : gradient,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.white.withAlpha(10),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(0, 0.2),
+                blurRadius: 10,
+                color: Colors.black26,
               ),
+            ],
+          ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: assetName == null
+                ? replacedWidget
+                : SvgPicture.asset(
+                    assetName!,
+                    width: iconWidth ?? 24,
+                    height: iconHeight ?? 24,
+                    colorFilter: iconColor != null
+                        ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
+                        : null,
+                  ),
+          ),
+        ),
       ),
     );
   }

@@ -25,9 +25,16 @@ class ProductCard extends StatelessWidget {
                 gradient: AppTheme.primaryCardGradient,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: AppTheme.textDescColor.withAlpha(30),
+                  color: AppTheme.textDescColor.withAlpha(50),
                   width: 0.5,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(50),
+                    blurRadius: 50,
+                    offset: const Offset(0, 100),
+                  ),
+                ],
               ),
               child: Stack(
                 children: [
@@ -46,27 +53,38 @@ class ProductCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: Image.asset(
-                                  'assets/images/cycle_0${(index % 4) + 1}.png',
-                                  fit: BoxFit.cover,
-                                  height: 90,
+                                child: Hero(
+                                  tag: 'product_image_$index',
+                                  child: Image.asset(
+                                    'assets/images/cycle_0${(index % 4) + 1}.png',
+                                    fit: BoxFit.cover,
+                                    height: 90,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 14),
-                              const Text(
-                                'Product Title',
-                                style: TextStyle(
+                              Text(
+                                'Category ${index % 4 + 1}',
+                                style: const TextStyle(
                                   color: AppTheme.textDescColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              Text(
+                                'Product Name '.toUpperCase(),
+                                style: const TextStyle(
+                                  color: AppTheme.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
                               Text(
-                                'Product description ',
-                                style: TextStyle(
-                                  color: AppTheme.textDescColor.withAlpha(200),
-                                  fontSize: 14,
+                                '\$ ${(index % 4 + 1) * 10}.99',
+                                style: const TextStyle(
+                                  color: AppTheme.textDescColor,
+                                  fontSize: 15,
+
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],

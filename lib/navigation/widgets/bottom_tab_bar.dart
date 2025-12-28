@@ -100,7 +100,7 @@ class _TabItem extends StatelessWidget {
             isActive ? -10 : 0,
             0,
           ),
-          width: isActive ? 65 : 48,
+          width: isActive ? 67 : 48,
           height: isActive ? 55 : 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
