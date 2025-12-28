@@ -13,7 +13,7 @@ class BikesPage extends StatelessWidget {
       slivers: [
         const SliverToBoxAdapter(child: HeroCard()),
         SliverToBoxAdapter(child: LadderRow()),
-        ProductsList(),
+        const ProductsList(),
       ],
     );
   }
