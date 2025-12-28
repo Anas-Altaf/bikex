@@ -9,11 +9,11 @@ class HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       child: ClipPath(
         clipper: DiagonalCardClipper(),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+          filter: AppTheme.primaryBlurFilter,
           child: Container(
             height: 260,
             width: double.infinity,

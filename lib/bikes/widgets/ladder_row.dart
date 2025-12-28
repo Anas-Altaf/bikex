@@ -9,7 +9,7 @@ class LadderRow extends StatelessWidget {
   final items = [
     'all',
     'bolt',
-    'sterring',
+    'road',
     'rects',
     'helmet',
   ];
@@ -17,7 +17,7 @@ class LadderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -43,6 +43,15 @@ class LadderRow extends StatelessWidget {
                       ),
                     ),
                     gradient: AppTheme.secondaryCardGradient,
+                  )
+                : item == 'road'
+                ? PrimaryIconBtn(
+                    assetName: 'assets/icons/$item.svg',
+                    gradient: AppTheme.secondaryCardGradient,
+                    // Don't apply iconColor for road icon to preserve dots
+                    iconWidth: 28,
+                    iconHeight: 28,
+                    onTap: () {},
                   )
                 : PrimaryIconBtn(
                     assetName: 'assets/icons/$item.svg',

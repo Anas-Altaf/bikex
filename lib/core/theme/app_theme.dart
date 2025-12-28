@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -7,24 +9,26 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFF242C3B);
   static const Color backgroundDeepColor = Color(0xFF222834);
   static const Color textColor = Color(0xFFFFFFFF);
-  static const Color textDescColor = Color.fromARGB(153, 255, 255, 255);
+  static const Color textDescColor = Color(
+    0x99FFFFFF,
+  ); // Hex #FFFFFF with 60% opacity
   static const Color shadowColor = Color(0xFF10141C);
 
   // transparent color
   static const Color transparentColor = Colors.transparent;
   //gradient colors
-  static LinearGradient tabBarGradient = LinearGradient(
+  static LinearGradient tabBarGradient = const LinearGradient(
     // Gradient flows from top-left to bottom-right.
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
 
     // Stop positions (0% and 100%)
-    stops: const [0.0, 1.0, 1.0],
+    stops: [0.0, 1.0, 1.0],
 
     colors: [
-      const Color(0xFF3B49A5),
-      const Color(0xFF363E51),
-      const Color(0xFF3B49A5),
+      Color(0xFF3B49A5),
+      Color(0xFF363E51),
+      Color(0xFF3B49A5),
     ],
   );
 
@@ -46,7 +50,7 @@ class AppTheme {
       Color(0xFF363E51),
       Color(0xFF191E26),
     ],
-  ).withOpacity(0.8);
+  ).withOpacity(0.6);
 
   // secondary card gradient
   static LinearGradient secondaryCardGradient = const LinearGradient(
@@ -56,5 +60,11 @@ class AppTheme {
       Color(0xFF353F54),
       Color(0xFF222834),
     ],
+  ).withOpacity(0.8);
+
+  // Image Blur
+  static final ImageFilter primaryBlurFilter = ImageFilter.blur(
+    sigmaX: 30,
+    sigmaY: 30,
   );
 }

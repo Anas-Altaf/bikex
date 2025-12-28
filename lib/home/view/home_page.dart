@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
                 color: AppTheme.backgroundColor,
               ),
               Container(
-                transform: Matrix4.translationValues(0, 110, 0),
+                transform: Matrix4.translationValues(0, 75, 0),
                 child: SvgPicture.asset(
                   'assets/bg/background_shape.svg',
                   fit: BoxFit.fitWidth,
@@ -78,12 +78,12 @@ class HomePage extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: .only(right: 14),
+          padding: const .only(right: 14),
           child: PrimaryIconBtn(
             assetName: 'assets/icons/search.svg',
             gradient: AppTheme.primaryGradient,
             onTap: () {
-              //TODO: Implement search functionality
+              // TODO:Implement search functionality
             },
           ),
         ),
