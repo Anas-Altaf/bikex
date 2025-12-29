@@ -89,8 +89,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                             Expanded(
                               child: _buildToggleButton(
                                 label: 'Specification',
-                                isSelected:
-                                    _selectedContent == 'specification',
+                                isSelected: _selectedContent == 'specification',
                                 onTap: () {
                                   setState(() {
                                     _selectedContent = 'specification';
@@ -107,9 +106,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 ),
 
                 // Content area (scrollable)
-                _selectedContent == 'description'
-                    ? _DescriptionTabSliver(product: widget.product)
-                    : _SpecificationTabSliver(product: widget.product),
+                if (_selectedContent == 'description')
+                  _DescriptionTabSliver(product: widget.product)
+                else
+                  _SpecificationTabSliver(product: widget.product),
               ],
             ),
           ),

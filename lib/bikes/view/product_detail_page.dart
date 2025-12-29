@@ -1,5 +1,6 @@
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
+import 'package:bikex/bikes/widgets/diagonal_painter.dart';
 import 'package:bikex/bikes/widgets/product_bottom_sheet.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
@@ -155,134 +156,8 @@ class _DiagonalBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _DiagonalPainter(),
+      painter: DiagonalPainter(),
       size: Size.infinite,
-    );
-  }
-}
-
-class _DiagonalPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Left dark side
-    final darkPaint = Paint()..color = AppTheme.backgroundColor;
-
-    // Right gradient side
-    final gradientPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF34C8E8),
-          Color(0xFF4E4AF2),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Draw gradient on right
-    final gradientPath = Path()
-      ..moveTo(size.width * 1, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height)
-      ..lineTo(size.width * 0.1, size.height)
-      ..close();
-
-    canvas
-      ..drawRect(Rect.fromLTWH(0, 0, size.width, size.height), darkPaint)
-      ..drawPath(gradientPath, gradientPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Description tab content (Sliver version)
-class _DescriptionTabSliver extends StatelessWidget {
-  const _DescriptionTabSliver({required this.product});
-
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      sliver: SliverList(
-        delegate: SliverChildListDelegate([
-          Text(
-            product.name.toUpperCase(),
-            style: const TextStyle(
-              color: AppTheme.textColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            product.description,
-            style: const TextStyle(
-              color: AppTheme.textDescColor,
-              fontSize: 14,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 20),
-        ]),
-      ),
-    );
-  }
-}
-
-/// Specification tab content (Sliver version)
-class _SpecificationTabSliver extends StatelessWidget {
-  const _SpecificationTabSliver({required this.product});
-
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    final entries = product.specifications.entries.toList();
-
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final entry = entries[index];
-            return Column(
-              children: [
-                if (index > 0)
-                  Divider(
-                    color: AppTheme.textDescColor.withAlpha(20),
-                    height: 1,
-                  ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        entry.key,
-                        style: const TextStyle(
-                          color: AppTheme.textDescColor,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        entry.value,
-                        style: const TextStyle(
-                          color: AppTheme.textColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-          childCount: entries.length,
-        ),
-      ),
     );
   }
 }
