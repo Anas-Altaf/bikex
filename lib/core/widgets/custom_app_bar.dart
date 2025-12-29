@@ -1,30 +1,36 @@
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/types/enums.dart';
+import 'package:bikex/core/widgets/primary_icon_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 /// Reusable custom app bar widget
+/// Use this for all app bars across the app
+///
+///
+///
+///
+/// Icon Types Enum
+/// back, down, search, cross
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     required this.title,
     super.key,
-    this.leftIcon,
-    this.rightIcon,
-    this.onLeftTap,
-    this.onRightTap,
-    this.iconDecoration,
-    this.backgroundColor,
+    this.iconType = AppBarIconType.back,
     this.titleStyle,
+    this.onTap,
+    this.centerTitle = false,
+    this.backgroundColor = AppTheme.backgroundColor,
   });
 
   final String title;
-  final Widget? leftIcon;
-  final Widget? rightIcon;
-  final VoidCallback? onLeftTap;
-  final VoidCallback? onRightTap;
-
-  /// Shared decoration for both icons
-  final BoxDecoration? iconDecoration;
+  final VoidCallback? onTap;
+  final AppBarIconType iconType;
   final Color? backgroundColor;
   final TextStyle? titleStyle;
+
+  final bool centerTitle;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -32,48 +38,57 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: leftIcon != null
-          ? _buildIconButton(
-              icon: leftIcon!,
-              onTap: onLeftTap,
-            )
-          : null,
+      centerTitle: centerTitle,
       automaticallyImplyLeading: false,
-      title: Text(
-        title,
-        style: titleStyle ??
-            const TextStyle(
-              color: AppTheme.textColor,
-              fontWeight: FontWeight.w700,
-            ),
-      ),
-      actions: rightIcon != null
-          ? [
-              Padding(
-                padding: const EdgeInsets.only(right: 14),
-                child: _buildIconButton(
-                  icon: rightIcon!,
-                  onTap: onRightTap,
+      title: Row(
+        mainAxisAlignment: .spaceBetween,
+        children: [
+          if (iconType != AppBarIconType.search) appBarIcon(),
+
+          Text(
+            title,
+            style:
+                titleStyle ??
+                const TextStyle(
+                  color: AppTheme.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
                 ),
-              ),
+          ),
+          SizedBox(width: 20),
+        ],
+      ),
+      actions: iconType == .search
+          ? [
+              appBarIcon(),
             ]
           : null,
-      backgroundColor: backgroundColor ?? AppTheme.backgroundColor,
+      backgroundColor: AppTheme.transparentColor,
       elevation: 0,
     );
   }
 
-  Widget _buildIconButton({
-    required Widget icon,
-    VoidCallback? onTap,
-  }) {
+  Widget appBarIcon() {
     return GestureDetector(
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
       child: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: iconDecoration,
-        child: icon,
+        padding: const .symmetric(horizontal: 21, vertical: 15),
+        margin: const .only(left: 0),
+        decoration: BoxDecoration(
+          borderRadius: AppTheme.primaryRadius,
+          gradient: AppTheme.primaryGradient,
+        ),
+
+        // padding: const EdgeInsets.only(right: 14),
+        child: SvgPicture.asset(
+          'assets/icons/${iconType.name}.svg',
+          width: 20,
+          height: 20,
+          colorFilter: const ColorFilter.mode(
+            AppTheme.textColor,
+            BlendMode.srcIn,
+          ),
+        ),
       ),
     );
   }

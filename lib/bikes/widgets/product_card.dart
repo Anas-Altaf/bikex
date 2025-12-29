@@ -1,8 +1,9 @@
 import 'package:bikex/bikes/bikes.dart';
-import 'package:bikex/bikes/widgets/product_details_sheet.dart';
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -19,7 +20,7 @@ class ProductCard extends StatelessWidget {
         final isFavorite = favoritesState.isFavorite(product.id);
 
         return GestureDetector(
-          onTap: () => showProductDetailsSheet(context, product),
+          onTap: () => context.push(AppRoutes.productDetailPath(product.id)),
           child: Transform(
             alignment: Alignment.topCenter,
             transform: Matrix4.skewY(-0.15),
@@ -111,9 +112,9 @@ class ProductCard extends StatelessWidget {
                           child: FavoriteButton(
                             isFavorite: isFavorite,
                             onTap: () {
-                              context
-                                  .read<FavoritesCubit>()
-                                  .toggleFavorite(product.id);
+                              context.read<FavoritesCubit>().toggleFavorite(
+                                product.id,
+                              );
                             },
                           ),
                         ),

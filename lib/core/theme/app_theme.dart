@@ -67,4 +67,9 @@ class AppTheme {
     sigmaX: 30,
     sigmaY: 30,
   );
+
+  // Radius
+  static const BorderRadius primaryRadius = BorderRadius.all(
+    Radius.circular(12),
+  );
 }

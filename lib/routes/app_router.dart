@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bikex/auth/auth.dart';
+import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/bikes/view/product_detail_page.dart';
 import 'package:bikex/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +13,10 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String home = '/home';
+  static const String productDetail = '/product/:productId';
+
+  /// Helper to build product detail path
+  static String productDetailPath(String productId) => '/product/$productId';
 }
 
 /// Application router configuration
@@ -74,6 +80,14 @@ class AppRouter {
       path: AppRoutes.home,
       name: 'home',
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.productDetail,
+      name: 'productDetail',
+      builder: (context, state) {
+        final productId = state.pathParameters['productId']!;
+        return ProductDetailPage(productId: productId);
+      },
     ),
   ];
 }
