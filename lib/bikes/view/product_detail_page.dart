@@ -18,11 +18,11 @@ class ProductDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
-        // Get product from state instead of calling cubit method
-        Product? product;
-        if (state is ProductsLoaded) {
-          product = state.getProductById(productId);
-        }
+        // Get product from state using switch expression
+        final product = switch (state) {
+          ProductsLoaded() => state.getProductById(productId),
+          _ => null,
+        };
 
         if (product == null) {
           return Scaffold(

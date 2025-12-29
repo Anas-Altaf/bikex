@@ -40,24 +40,18 @@ class AppRouter {
         state.matchedLocation == AppRoutes.signup;
     final isOnSplash = state.matchedLocation == AppRoutes.splash;
 
-    // Still loading auth state
-    if (authState is AuthUnknown) {
-      return isOnSplash ? null : AppRoutes.splash;
-    }
-
-    // Not authenticated - redirect to login
-    if (authState is AuthUnauthenticated || authState is AuthError) {
-      return isOnAuthPage ? null : AppRoutes.login;
-    }
-
-    // Authenticated - redirect away from auth pages
-    if (authState is AuthAuthenticated) {
-      if (isOnAuthPage || isOnSplash) {
-        return AppRoutes.home;
-      }
-    }
-
-    return null;
+    return switch (authState) {
+      // Still loading auth state
+      AuthUnknown() => isOnSplash ? null : AppRoutes.splash,
+      
+      // Not authenticated - redirect to login
+      AuthUnauthenticated() || AuthError() => 
+        isOnAuthPage ? null : AppRoutes.login,
+      
+      // Authenticated - redirect away from auth pages
+      AuthAuthenticated() => 
+        (isOnAuthPage || isOnSplash) ? AppRoutes.home : null,
+    };
   }
 
   List<RouteBase> get _routes => [

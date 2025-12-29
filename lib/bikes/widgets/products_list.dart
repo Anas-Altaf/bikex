@@ -13,64 +13,60 @@ class ProductsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, productsState) {
-        if (productsState is ProductsLoading) {
-          return const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
+        return switch (productsState) {
+          ProductsInitial() => const SliverToBoxAdapter(
+              child: SizedBox.shrink(),
+            ),
+          ProductsLoading() => const SliverFillRemaining(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ProductsError(:final message) => SliverFillRemaining(
+              child: Center(child: Text('Error: $message')),
+            ),
+          ProductsLoaded(:final displayProducts) =>
+            BlocBuilder<FavoritesCubit, FavoritesState>(
+              // Only rebuild when favorites actually change
+              buildWhen: (previous, current) =>
+                  previous.favoriteIds != current.favoriteIds,
+              builder: (context, favoritesState) {
+                return SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final product = displayProducts[index];
+                        final isLeft = index.isEven;
+                        final isFavorite =
+                            favoritesState.isFavorite(product.id);
 
-        if (productsState is ProductsError) {
-          return SliverFillRemaining(
-            child: Center(child: Text('Error: ${productsState.message}')),
-          );
-        }
-
-        if (productsState is ProductsLoaded) {
-          final products = productsState.displayProducts;
-
-          return BlocBuilder<FavoritesCubit, FavoritesState>(
-            // Only rebuild when favorites actually change
-            buildWhen: (previous, current) =>
-                previous.favoriteIds != current.favoriteIds,
-            builder: (context, favoritesState) {
-              return SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = products[index];
-                      final isLeft = index.isEven;
-                      final isFavorite = favoritesState.isFavorite(product.id);
-
-                      return Transform.translate(
-                        offset: Offset(0, isLeft ? 25 : 0),
-                        child: ProductCard(
-                          product: product,
-                          isFavorite: isFavorite,
-                          onTap: () => context.push(
-                            AppRoutes.productDetailPath(product.id),
+                        return Transform.translate(
+                          offset: Offset(0, isLeft ? 25 : 0),
+                          child: ProductCard(
+                            product: product,
+                            isFavorite: isFavorite,
+                            onTap: () => context.push(
+                              AppRoutes.productDetailPath(product.id),
+                            ),
+                            onFavoriteToggle: () => context
+                                .read<FavoritesCubit>()
+                                .toggleFavorite(product.id),
                           ),
-                          onFavoriteToggle: () => context
-                              .read<FavoritesCubit>()
-                              .toggleFavorite(product.id),
-                        ),
-                      );
-                    },
-                    childCount: products.length,
+                        );
+                      },
+                      childCount: displayProducts.length,
+                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 0.80,
+                    ),
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 0.80,
-                  ),
-                ),
-              );
-            },
-          );
-        }
-
-        return const SliverToBoxAdapter(child: SizedBox.shrink());
+                );
+              },
+            ),
+        };
       },
     );
   }

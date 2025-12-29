@@ -10,7 +10,10 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        final user = state is AuthAuthenticated ? state.user : null;
+        final user = switch (state) {
+          AuthAuthenticated(:final user) => user,
+          _ => null,
+        };
 
         return Center(
           child: Column(

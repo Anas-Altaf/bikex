@@ -31,13 +31,18 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   /// Filter products by category
   void filterByCategory(String category) {
-    if (state is ProductsLoaded) {
-      final currentState = state as ProductsLoaded;
-      final filteredProducts = _productsRepo.getProductsByCategory(category);
-      emit(currentState.copyWith(
-        filteredProducts: filteredProducts,
-        selectedCategory: category,
-      ));
+    switch (state) {
+      case ProductsLoaded(:final products, :final categories):
+        final filteredProducts = _productsRepo.getProductsByCategory(category);
+        emit(ProductsLoaded(
+          products: products,
+          categories: categories,
+          filteredProducts: filteredProducts,
+          selectedCategory: category,
+        ));
+      default:
+        // Do nothing if not in loaded state
+        break;
     }
   }
 }

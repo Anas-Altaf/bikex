@@ -29,9 +29,10 @@ class LadderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
-        final selectedCategory = state is ProductsLoaded
-            ? state.selectedCategory
-            : 'All';
+        final selectedCategory = switch (state) {
+          ProductsLoaded(:final selectedCategory) => selectedCategory,
+          _ => 'All',
+        };
 
         return Container(
           transform: Matrix4.translationValues(0, -10, 0),
