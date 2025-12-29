@@ -51,11 +51,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 titleStyle ??
                 const TextStyle(
                   color: AppTheme.textColor,
-                  fontSize: 24,
+                  fontSize: 22,
                   fontWeight: FontWeight.w900,
                 ),
           ),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
         ],
       ),
       actions: iconType == .search

@@ -62,11 +62,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      // Grab handle
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(top: 12, bottom: 8),
-                        child: _buildGrabHandle(),
+                      SizedBox(
+                        height: 30,
                       ),
 
                       // Toggle buttons

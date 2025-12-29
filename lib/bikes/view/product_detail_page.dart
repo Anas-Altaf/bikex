@@ -106,20 +106,17 @@ class _ProductDetailContent extends StatelessWidget {
                                 availableHeight * 0.9, // Maximum height
                               );
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: SizedBox(
-                              height: imageHeight,
-                              width: double.infinity,
-                              child: Center(
-                                child: Hero(
-                                  tag: 'product_image_${product.id}',
-                                  child: Image.asset(
-                                    product.imageAsset ??
-                                        'assets/images/cycle_01.png',
-                                    fit: BoxFit.contain,
-                                    width: double.infinity,
-                                  ),
+                          return SizedBox(
+                            height: imageHeight,
+                            width: double.infinity,
+                            child: Center(
+                              child: Hero(
+                                tag: 'product_image_${product.id}',
+                                child: Image.asset(
+                                  product.imageAsset ??
+                                      'assets/images/cycle_01.png',
+                                  fit: BoxFit.contain,
+                                  width: double.infinity,
                                 ),
                               ),
                             ),
