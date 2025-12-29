@@ -1,4 +1,5 @@
 import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/bikes/widgets/diagonal_painter.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -57,47 +58,49 @@ class _ProductDetailContent extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Stack(
-        children: [
-          // Diagonal gradient background
-          _DiagonalBackground(),
+      body: SizedBox.expand(
+        child: Stack(
+          children: [
+            // Diagonal gradient background
+            _DiagonalBackground(),
 
-          // Main content
-          SafeArea(
-            child: Column(
-              children: [
-                // App bar using CustomAppBar
-                CustomAppBar(
-                  title: product.name.toUpperCase(),
-                  onTap: () => context.pop(),
-                ),
+            // Main content
+            SafeArea(
+              child: Column(
+                children: [
+                  // App bar using CustomAppBar
+                  CustomAppBar(
+                    title: product.name.toUpperCase(),
+                    onTap: () => context.pop(),
+                  ),
 
-                // Hero product image
-                Expanded(
-                  child: Center(
-                    child: Hero(
-                      tag: 'product_image_${product.id}',
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Image.asset(
-                          product.imageAsset ?? 'assets/images/cycle_01.png',
-                          fit: BoxFit.contain,
-                          width: double.infinity,
+                  // Hero product image
+                  Expanded(
+                    child: Center(
+                      child: Hero(
+                        tag: 'product_image_${product.id}',
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Image.asset(
+                            product.imageAsset ?? 'assets/images/cycle_01.png',
+                            fit: BoxFit.contain,
+                            width: double.infinity,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                // Space for bottom sheet
-                SizedBox(height: screenHeight * 0.4),
-              ],
+                  // Space for bottom sheet
+                  SizedBox(height: screenHeight * 0.15),
+                ],
+              ),
             ),
-          ),
 
-          // Persistent bottom sheet
-          _ProductBottomSheet(product: product),
-        ],
+            // Draggable bottom sheet
+            _ProductBottomSheet(product: product),
+          ],
+        ),
       ),
     );
   }
@@ -108,47 +111,13 @@ class _DiagonalBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _DiagonalPainter(),
+      painter: DiagonalPainter(),
       size: Size.infinite,
     );
   }
 }
 
-class _DiagonalPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Left dark side
-    final darkPaint = Paint()..color = AppTheme.backgroundColor;
-
-    // Right gradient side
-    final gradientPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF34C8E8),
-          Color(0xFF4E4AF2),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    // Draw gradient on right
-    final gradientPath = Path()
-      ..moveTo(size.width * 1, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height)
-      ..lineTo(size.width * 0.1, size.height)
-      ..close();
-
-    canvas
-      ..drawRect(Rect.fromLTWH(0, 0, size.width, size.height), darkPaint)
-      ..drawPath(gradientPath, gradientPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Persistent bottom sheet with tabs
+/// Persistent bottom sheet with toggle buttons (Draggable)
 class _ProductBottomSheet extends StatefulWidget {
   const _ProductBottomSheet({required this.product});
 
@@ -158,98 +127,234 @@ class _ProductBottomSheet extends StatefulWidget {
   State<_ProductBottomSheet> createState() => _ProductBottomSheetState();
 }
 
-class _ProductBottomSheetState extends State<_ProductBottomSheet>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _ProductBottomSheetState extends State<_ProductBottomSheet> {
+  final DraggableScrollableController _sheetController =
+      DraggableScrollableController();
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
+  // Track which content to show: 'description' or 'specification'
+  String _selectedContent = 'description';
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _sheetController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: screenHeight * 0.45,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.backgroundDeepColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          border: Border.all(
-            color: AppTheme.textDescColor.withAlpha(20),
-          ),
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Tab bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _ProductTabBar(controller: _tabController),
-            ),
-            const SizedBox(height: 16),
-            // Tab content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _DescriptionTab(product: widget.product),
-                  _SpecificationTab(product: widget.product),
-                ],
+    return DraggableScrollableSheet(
+      controller: _sheetController,
+      initialChildSize: 0.1, // Just show buttons initially
+      minChildSize: 0.1, // Minimum just buttons
+      maxChildSize: 0.5, // Maximum when expanded
+      snap: true,
+      snapSizes: const [0.1, 0.5],
+      builder: (context, scrollController) {
+        return NotificationListener<DraggableScrollableNotification>(
+          onNotification: (notification) {
+            return true;
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.backgroundDeepColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
+              border: Border.all(
+                color: AppTheme.textDescColor.withAlpha(20),
               ),
             ),
-            // Price and Add to Cart
-            _BottomPriceBar(product: widget.product),
-          ],
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                // Header with grab handle and buttons (not scrollable)
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      // Grab handle
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(top: 12, bottom: 8),
+                        child: _buildGrabHandle(),
+                      ),
+
+                      // Two buttons in a row
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _buildToggleButton(
+                                label: 'Description',
+                                isSelected: _selectedContent == 'description',
+                                onTap: () {
+                                  setState(() {
+                                    _selectedContent = 'description';
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildToggleButton(
+                                label: 'Specification',
+                                isSelected: _selectedContent == 'specification',
+                                onTap: () {
+                                  setState(() {
+                                    _selectedContent = 'specification';
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+
+                // Content area (scrollable within the sheet)
+                _selectedContent == 'description'
+                    ? _DescriptionTabSliver(product: widget.product)
+                    : _SpecificationTabSliver(product: widget.product),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGrabHandle() {
+    return Center(
+      child: Container(
+        width: 50,
+        height: 5,
+        decoration: BoxDecoration(
+          color: AppTheme.textDescColor.withAlpha(100),
+          borderRadius: BorderRadius.circular(3),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildToggleButton({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          gradient: isSelected ? AppTheme.primaryGradient : null,
+          color: isSelected ? null : AppTheme.backgroundColor,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : AppTheme.textDescColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-/// Custom tab bar matching the design
-class _ProductTabBar extends StatelessWidget {
-  const _ProductTabBar({required this.controller});
+/// Description tab content (Sliver version)
+class _DescriptionTabSliver extends StatelessWidget {
+  const _DescriptionTabSliver({required this.product});
 
-  final TabController controller;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(30),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          Text(
+            product.name.toUpperCase(),
+            style: const TextStyle(
+              color: AppTheme.textColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            product.description,
+            style: const TextStyle(
+              color: AppTheme.textDescColor,
+              fontSize: 14,
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: 20),
+        ]),
       ),
-      child: TabBar(
-        controller: controller,
-        indicator: BoxDecoration(
-          gradient: AppTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(30),
+    );
+  }
+}
+
+/// Specification tab content (Sliver version)
+class _SpecificationTabSliver extends StatelessWidget {
+  const _SpecificationTabSliver({required this.product});
+
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = product.specifications.entries.toList();
+
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final entry = entries[index];
+            return Column(
+              children: [
+                if (index > 0)
+                  Divider(
+                    color: AppTheme.textDescColor.withAlpha(20),
+                    height: 1,
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        entry.key,
+                        style: const TextStyle(
+                          color: AppTheme.textDescColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        entry.value,
+                        style: const TextStyle(
+                          color: AppTheme.textColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+          childCount: entries.length,
         ),
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelColor: Colors.white,
-        unselectedLabelColor: AppTheme.textDescColor,
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-        dividerColor: Colors.transparent,
-        tabs: const [
-          Tab(text: 'Description'),
-          Tab(text: 'Specification'),
-        ],
       ),
     );
   }
@@ -257,13 +362,18 @@ class _ProductTabBar extends StatelessWidget {
 
 /// Description tab content
 class _DescriptionTab extends StatelessWidget {
-  const _DescriptionTab({required this.product});
+  const _DescriptionTab({
+    required this.product,
+    required this.scrollController,
+  });
 
   final Product product;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,6 +395,7 @@ class _DescriptionTab extends StatelessWidget {
               height: 1.6,
             ),
           ),
+          const SizedBox(height: 20), // Extra space for scroll
         ],
       ),
     );
@@ -293,15 +404,20 @@ class _DescriptionTab extends StatelessWidget {
 
 /// Specification tab content
 class _SpecificationTab extends StatelessWidget {
-  const _SpecificationTab({required this.product});
+  const _SpecificationTab({
+    required this.product,
+    required this.scrollController,
+  });
 
   final Product product;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     final entries = product.specifications.entries.toList();
 
     return ListView.separated(
+      controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       itemCount: entries.length,
       separatorBuilder: (context, index) => Divider(
@@ -334,56 +450,6 @@ class _SpecificationTab extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-/// Bottom bar with price and add to cart button
-class _BottomPriceBar extends StatelessWidget {
-  const _BottomPriceBar({required this.product});
-
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          // Price
-          Expanded(
-            child: Text(
-              '\$ ${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(
-                color: AppTheme.primaryUpColor,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          // Add to Cart button
-          GestureDetector(
-            onTap: () {
-              // TODO(dev): Add to cart functionality.
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-              decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Text(
-                'Add to Cart',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
