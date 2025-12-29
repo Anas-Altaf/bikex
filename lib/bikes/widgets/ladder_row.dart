@@ -4,8 +4,17 @@ import 'package:bikex/core/widgets/primary_icon_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Category filter row widget
+/// Accepts optional callback for category selection
 class LadderRow extends StatelessWidget {
-  const LadderRow({super.key});
+  const LadderRow({
+    super.key,
+    this.onCategorySelected,
+  });
+
+  /// Optional callback for category selection
+  /// If not provided, defaults to calling ProductsCubit directly
+  final void Function(String category)? onCategorySelected;
 
   // Category items with icons
   static const List<Map<String, String>> _categoryItems = [
@@ -81,7 +90,12 @@ class LadderRow extends StatelessWidget {
             )
           : null,
       onTap: () {
-        context.read<ProductsCubit>().filterByCategory(categoryName);
+        // Use callback if provided, otherwise use BLoC directly
+        if (onCategorySelected != null) {
+          onCategorySelected!(categoryName);
+        } else {
+          context.read<ProductsCubit>().filterByCategory(categoryName);
+        }
       },
     );
   }

@@ -35,6 +35,15 @@ class ProductsLoaded extends ProductsState {
   /// Get display products (filtered or all)
   List<Product> get displayProducts => filteredProducts ?? products;
 
+  /// Get product by ID from loaded products
+  Product? getProductById(String id) {
+    try {
+      return products.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
   ProductsLoaded copyWith({
     List<Product>? products,
     List<String>? categories,

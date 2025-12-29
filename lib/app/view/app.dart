@@ -16,15 +16,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create repositories at app level
-    final productsRepo = ProductsRepo();
-    final favoritesRepo = FavoritesRepo();
+    // Create repositories at app level (concrete implementations)
+    final ProductsRepo productsRepo = MockProductsRepo();
+    final FavoritesRepo favoritesRepo = InMemoryFavoritesRepo();
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: authRepo),
-        RepositoryProvider.value(value: productsRepo),
-        RepositoryProvider.value(value: favoritesRepo),
+        RepositoryProvider<ProductsRepo>.value(value: productsRepo),
+        RepositoryProvider<FavoritesRepo>.value(value: favoritesRepo),
       ],
       child: MultiBlocProvider(
         providers: [

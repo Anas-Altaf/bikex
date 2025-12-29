@@ -7,16 +7,18 @@ part 'products_state.dart';
 
 /// Cubit for managing products state
 class ProductsCubit extends Cubit<ProductsState> {
-  ProductsCubit({required this.productsRepo}) : super(const ProductsInitial());
+  ProductsCubit({required ProductsRepo productsRepo})
+      : _productsRepo = productsRepo,
+        super(const ProductsInitial());
 
-  final ProductsRepo productsRepo;
+  final ProductsRepo _productsRepo;
 
   /// Load all products
   void loadProducts() {
     emit(const ProductsLoading());
     try {
-      final products = productsRepo.getProducts();
-      final categories = productsRepo.getCategories();
+      final products = _productsRepo.getProducts();
+      final categories = _productsRepo.getCategories();
       emit(ProductsLoaded(
         products: products,
         categories: categories,
@@ -31,16 +33,11 @@ class ProductsCubit extends Cubit<ProductsState> {
   void filterByCategory(String category) {
     if (state is ProductsLoaded) {
       final currentState = state as ProductsLoaded;
-      final filteredProducts = productsRepo.getProductsByCategory(category);
+      final filteredProducts = _productsRepo.getProductsByCategory(category);
       emit(currentState.copyWith(
         filteredProducts: filteredProducts,
         selectedCategory: category,
       ));
     }
-  }
-
-  /// Get product by ID
-  Product? getProductById(String id) {
-    return productsRepo.getProductById(id);
   }
 }

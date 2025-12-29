@@ -1,8 +1,10 @@
 import 'package:bikex/bikes/models/models.dart';
+import 'package:bikex/bikes/repo/products_repo_interface.dart';
 
-/// Repository for managing bike products
-class ProductsRepo {
-  ProductsRepo();
+/// Mock implementation of ProductsRepo for development/testing
+/// Uses hardcoded product data
+class MockProductsRepo implements ProductsRepo {
+  MockProductsRepo();
 
   /// Mock products data with longer descriptions
   static final List<Product> _mockProducts = [

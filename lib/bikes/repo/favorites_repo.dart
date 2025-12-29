@@ -1,8 +1,11 @@
 import 'dart:async';
 
-/// Repository for managing favorite products
-class FavoritesRepo {
-  FavoritesRepo();
+import 'package:bikex/bikes/repo/favorites_repo_interface.dart';
+
+/// In-memory implementation of FavoritesRepo
+/// Stores favorites in memory (not persisted)
+class InMemoryFavoritesRepo implements FavoritesRepo {
+  InMemoryFavoritesRepo();
 
   /// In-memory storage for favorites (would be persisted in real app)
   final Set<String> _favoriteIds = {};

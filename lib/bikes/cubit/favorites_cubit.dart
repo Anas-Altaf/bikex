@@ -8,12 +8,13 @@ part 'favorites_state.dart';
 
 /// Cubit for managing favorites state
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit({required this.favoritesRepo})
-      : super(const FavoritesState()) {
-    _subscription = favoritesRepo.favoritesStream.listen(_onFavoritesChanged);
+  FavoritesCubit({required FavoritesRepo favoritesRepo})
+      : _favoritesRepo = favoritesRepo,
+        super(const FavoritesState()) {
+    _subscription = _favoritesRepo.favoritesStream.listen(_onFavoritesChanged);
   }
 
-  final FavoritesRepo favoritesRepo;
+  final FavoritesRepo _favoritesRepo;
   StreamSubscription<Set<String>>? _subscription;
 
   void _onFavoritesChanged(Set<String> favoriteIds) {
@@ -22,7 +23,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   /// Toggle favorite status for a product
   void toggleFavorite(String productId) {
-    favoritesRepo.toggleFavorite(productId);
+    _favoritesRepo.toggleFavorite(productId);
   }
 
   /// Check if a product is favorited
