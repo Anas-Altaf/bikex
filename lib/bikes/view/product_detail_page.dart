@@ -1,4 +1,5 @@
 import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -40,113 +41,107 @@ class ProductDetailPage extends StatelessWidget {
           );
         }
 
-        return _ProductDetailContent(product: product);
+        // Provide sheet cubit for this page
+        return BlocProvider(
+          create: (_) => ProductDetailSheetCubit(),
+          child: _ProductDetailContent(product: product),
+        );
       },
     );
   }
 }
 
-class _ProductDetailContent extends StatefulWidget {
+class _ProductDetailContent extends StatelessWidget {
   const _ProductDetailContent({required this.product});
 
   final Product product;
 
   @override
-  State<_ProductDetailContent> createState() => _ProductDetailContentState();
-}
-
-class _ProductDetailContentState extends State<_ProductDetailContent> {
-  double _sheetSize = 0.15; // Track the current sheet size
-
-  void _updateSheetSize(double size) {
-    if (_sheetSize != size) {
-      setState(() {
-        _sheetSize = size;
-      });
-      // Debug: Print to verify updates
-      print('Sheet size updated: $size');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    return BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
+      builder: (context, sheetState) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        final sheetSize = sheetState.sheetSize;
 
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: SizedBox.expand(
-        child: Stack(
-          children: [
-            // Diagonal gradient background
-            _DiagonalBackground(),
+        return Scaffold(
+          backgroundColor: AppTheme.backgroundColor,
+          body: SizedBox.expand(
+            child: Stack(
+              children: [
+                // Diagonal gradient background
+                _DiagonalBackground(),
 
-            // Main content
-            SafeArea(
-              child: Column(
-                children: [
-                  // App bar using CustomAppBar
-                  CustomAppBar(
-                    title: widget.product.name.toUpperCase(),
-                    onTap: () => context.pop(),
-                  ),
+                // Main content
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // App bar using CustomAppBar
+                      CustomAppBar(
+                        title: product.name.toUpperCase(),
+                        onTap: () => context.pop(),
+                      ),
 
-                  // Hero product image - dynamically sized based on sheet position
-                  Builder(
-                    builder: (context) {
-                      // Get dimensions
-                      final appBarHeight = 60.0;
-                      final statusBarHeight = MediaQuery.of(context).padding.top;
-                      
-                      // Calculate available height for image area
-                      final availableHeight = screenHeight - 
-                          statusBarHeight - 
-                          appBarHeight;
-                      
-                      // Calculate how much space the sheet takes
-                      final sheetHeight = screenHeight * _sheetSize;
-                      
-                      // Remaining space for image (with some padding)
-                      final imageHeight = (availableHeight - sheetHeight - 40).clamp(
-                        150.0,  // Minimum height
-                        availableHeight * 0.9,  // Maximum height
-                      );
+                      // Hero product image - dynamically sized based on sheet position
+                      Builder(
+                        builder: (context) {
+                          // Get dimensions
+                          final appBarHeight = 60.0;
+                          final statusBarHeight =
+                              MediaQuery.of(context).padding.top;
 
-                      print('🖼️ Image calc - Sheet: ${(_sheetSize * 100).toStringAsFixed(0)}%, Height: ${imageHeight.toStringAsFixed(0)}px');
+                          // Calculate available height for image area
+                          final availableHeight =
+                              screenHeight - statusBarHeight - appBarHeight;
 
-                      return SizedBox(
-                        height: imageHeight,
-                        width: double.infinity,
-                        child: Center(
-                          child: Padding(
+                          // Calculate how much space the sheet takes
+                          final sheetHeight = screenHeight * sheetSize;
+
+                          // Remaining space for image (with some padding)
+                          final imageHeight =
+                              (availableHeight - sheetHeight - 40).clamp(
+                            150.0, // Minimum height
+                            availableHeight * 0.9, // Maximum height
+                          );
+
+                          return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Hero(
-                              tag: 'product_image_${widget.product.id}',
-                              child: Image.asset(
-                                widget.product.imageAsset ??
-                                    'assets/images/cycle_01.png',
-                                fit: BoxFit.contain,
+                            child: SizedBox(
+                              height: imageHeight,
+                              width: double.infinity,
+                              child: Center(
+                                child: Hero(
+                                  tag: 'product_image_${product.id}',
+                                  child: Image.asset(
+                                    product.imageAsset ??
+                                        'assets/images/cycle_01.png',
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
+                          );
+                        },
+                      ),
+
+                      // Spacer to push everything up
+                      const Spacer(),
+                    ],
                   ),
+                ),
 
-                  // Spacer to push everything up
-                  const Spacer(),
-                ],
-              ),
+                // Draggable bottom sheet
+                _ProductBottomSheet(
+                  product: product,
+                  onSizeChanged: (size) {
+                    context.read<ProductDetailSheetCubit>().updateSheetSize(size);
+                  },
+                ),
+              ],
             ),
-
-            // Draggable bottom sheet
-            _ProductBottomSheet(
-              product: widget.product,
-              onSizeChanged: _updateSheetSize,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
