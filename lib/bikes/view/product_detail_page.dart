@@ -1,5 +1,4 @@
 import 'package:bikex/bikes/bikes.dart';
-import 'package:bikex/bikes/widgets/diagonal_painter.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +46,27 @@ class ProductDetailPage extends StatelessWidget {
   }
 }
 
-class _ProductDetailContent extends StatelessWidget {
+class _ProductDetailContent extends StatefulWidget {
   const _ProductDetailContent({required this.product});
 
   final Product product;
+
+  @override
+  State<_ProductDetailContent> createState() => _ProductDetailContentState();
+}
+
+class _ProductDetailContentState extends State<_ProductDetailContent> {
+  double _sheetSize = 0.15; // Track the current sheet size
+
+  void _updateSheetSize(double size) {
+    if (_sheetSize != size) {
+      setState(() {
+        _sheetSize = size;
+      });
+      // Debug: Print to verify updates
+      print('Sheet size updated: $size');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,35 +86,64 @@ class _ProductDetailContent extends StatelessWidget {
                 children: [
                   // App bar using CustomAppBar
                   CustomAppBar(
-                    title: product.name.toUpperCase(),
+                    title: widget.product.name.toUpperCase(),
                     onTap: () => context.pop(),
                   ),
 
-                  // Hero product image
-                  Expanded(
-                    child: Center(
-                      child: Hero(
-                        tag: 'product_image_${product.id}',
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Image.asset(
-                            product.imageAsset ?? 'assets/images/cycle_01.png',
-                            fit: BoxFit.contain,
-                            width: double.infinity,
+                  // Hero product image - dynamically sized based on sheet position
+                  Builder(
+                    builder: (context) {
+                      // Get dimensions
+                      final appBarHeight = 60.0;
+                      final statusBarHeight = MediaQuery.of(context).padding.top;
+                      
+                      // Calculate available height for image area
+                      final availableHeight = screenHeight - 
+                          statusBarHeight - 
+                          appBarHeight;
+                      
+                      // Calculate how much space the sheet takes
+                      final sheetHeight = screenHeight * _sheetSize;
+                      
+                      // Remaining space for image (with some padding)
+                      final imageHeight = (availableHeight - sheetHeight - 40).clamp(
+                        150.0,  // Minimum height
+                        availableHeight * 0.9,  // Maximum height
+                      );
+
+                      print('🖼️ Image calc - Sheet: ${(_sheetSize * 100).toStringAsFixed(0)}%, Height: ${imageHeight.toStringAsFixed(0)}px');
+
+                      return SizedBox(
+                        height: imageHeight,
+                        width: double.infinity,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Hero(
+                              tag: 'product_image_${widget.product.id}',
+                              child: Image.asset(
+                                widget.product.imageAsset ??
+                                    'assets/images/cycle_01.png',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
 
-                  // Space for bottom sheet
-                  SizedBox(height: screenHeight * 0.15),
+                  // Spacer to push everything up
+                  const Spacer(),
                 ],
               ),
             ),
 
             // Draggable bottom sheet
-            _ProductBottomSheet(product: product),
+            _ProductBottomSheet(
+              product: widget.product,
+              onSizeChanged: _updateSheetSize,
+            ),
           ],
         ),
       ),
@@ -111,17 +156,55 @@ class _DiagonalBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: DiagonalPainter(),
+      painter: _DiagonalPainter(),
       size: Size.infinite,
     );
   }
 }
 
+class _DiagonalPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Left dark side
+    final darkPaint = Paint()..color = AppTheme.backgroundColor;
+
+    // Right gradient side
+    final gradientPaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF34C8E8),
+          Color(0xFF4E4AF2),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    // Draw gradient on right
+    final gradientPath = Path()
+      ..moveTo(size.width * 1, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height)
+      ..lineTo(size.width * 0.1, size.height)
+      ..close();
+
+    canvas
+      ..drawRect(Rect.fromLTWH(0, 0, size.width, size.height), darkPaint)
+      ..drawPath(gradientPath, gradientPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 /// Persistent bottom sheet with toggle buttons (Draggable)
 class _ProductBottomSheet extends StatefulWidget {
-  const _ProductBottomSheet({required this.product});
+  const _ProductBottomSheet({
+    required this.product,
+    required this.onSizeChanged,
+  });
 
   final Product product;
+  final ValueChanged<double> onSizeChanged;
 
   @override
   State<_ProductBottomSheet> createState() => _ProductBottomSheetState();
@@ -144,14 +227,16 @@ class _ProductBottomSheetState extends State<_ProductBottomSheet> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: _sheetController,
-      initialChildSize: 0.1, // Just show buttons initially
-      minChildSize: 0.1, // Minimum just buttons
-      maxChildSize: 0.5, // Maximum when expanded
+      initialChildSize: 0.15, // Just show buttons initially
+      minChildSize: 0.15, // Minimum just buttons
+      maxChildSize: 0.7, // Maximum when expanded
       snap: true,
-      snapSizes: const [0.1, 0.5],
+      snapSizes: const [0.15, 0.7],
       builder: (context, scrollController) {
         return NotificationListener<DraggableScrollableNotification>(
           onNotification: (notification) {
+            // Update parent with current sheet size
+            widget.onSizeChanged(notification.extent);
             return true;
           },
           child: Container(
@@ -356,100 +441,6 @@ class _SpecificationTabSliver extends StatelessWidget {
           childCount: entries.length,
         ),
       ),
-    );
-  }
-}
-
-/// Description tab content
-class _DescriptionTab extends StatelessWidget {
-  const _DescriptionTab({
-    required this.product,
-    required this.scrollController,
-  });
-
-  final Product product;
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            product.name.toUpperCase(),
-            style: const TextStyle(
-              color: AppTheme.textColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            product.description,
-            style: const TextStyle(
-              color: AppTheme.textDescColor,
-              fontSize: 14,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 20), // Extra space for scroll
-        ],
-      ),
-    );
-  }
-}
-
-/// Specification tab content
-class _SpecificationTab extends StatelessWidget {
-  const _SpecificationTab({
-    required this.product,
-    required this.scrollController,
-  });
-
-  final Product product;
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context) {
-    final entries = product.specifications.entries.toList();
-
-    return ListView.separated(
-      controller: scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: entries.length,
-      separatorBuilder: (context, index) => Divider(
-        color: AppTheme.textDescColor.withAlpha(20),
-        height: 1,
-      ),
-      itemBuilder: (context, index) {
-        final entry = entries[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                entry.key,
-                style: const TextStyle(
-                  color: AppTheme.textDescColor,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                entry.value,
-                style: const TextStyle(
-                  color: AppTheme.textColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
