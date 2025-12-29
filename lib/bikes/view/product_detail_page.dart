@@ -1,5 +1,6 @@
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
+import 'package:bikex/bikes/widgets/product_bottom_sheet.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -86,8 +87,9 @@ class _ProductDetailContent extends StatelessWidget {
                         builder: (context) {
                           // Get dimensions
                           final appBarHeight = 60.0;
-                          final statusBarHeight =
-                              MediaQuery.of(context).padding.top;
+                          final statusBarHeight = MediaQuery.of(
+                            context,
+                          ).padding.top;
 
                           // Calculate available height for image area
                           final availableHeight =
@@ -99,9 +101,9 @@ class _ProductDetailContent extends StatelessWidget {
                           // Remaining space for image (with some padding)
                           final imageHeight =
                               (availableHeight - sheetHeight - 40).clamp(
-                            150.0, // Minimum height
-                            availableHeight * 0.9, // Maximum height
-                          );
+                                150.0, // Minimum height
+                                availableHeight * 0.9, // Maximum height
+                              );
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,10 +133,12 @@ class _ProductDetailContent extends StatelessWidget {
                 ),
 
                 // Draggable bottom sheet
-                _ProductBottomSheet(
+                ProductBottomSheet(
                   product: product,
                   onSizeChanged: (size) {
-                    context.read<ProductDetailSheetCubit>().updateSheetSize(size);
+                    context.read<ProductDetailSheetCubit>().updateSheetSize(
+                      size,
+                    );
                   },
                 ),
               ],
@@ -189,163 +193,6 @@ class _DiagonalPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Persistent bottom sheet with toggle buttons (Draggable)
-class _ProductBottomSheet extends StatefulWidget {
-  const _ProductBottomSheet({
-    required this.product,
-    required this.onSizeChanged,
-  });
-
-  final Product product;
-  final ValueChanged<double> onSizeChanged;
-
-  @override
-  State<_ProductBottomSheet> createState() => _ProductBottomSheetState();
-}
-
-class _ProductBottomSheetState extends State<_ProductBottomSheet> {
-  final DraggableScrollableController _sheetController =
-      DraggableScrollableController();
-
-  // Track which content to show: 'description' or 'specification'
-  String _selectedContent = 'description';
-
-  @override
-  void dispose() {
-    _sheetController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: _sheetController,
-      initialChildSize: 0.15, // Just show buttons initially
-      minChildSize: 0.15, // Minimum just buttons
-      maxChildSize: 0.7, // Maximum when expanded
-      snap: true,
-      snapSizes: const [0.15, 0.7],
-      builder: (context, scrollController) {
-        return NotificationListener<DraggableScrollableNotification>(
-          onNotification: (notification) {
-            // Update parent with current sheet size
-            widget.onSizeChanged(notification.extent);
-            return true;
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppTheme.backgroundDeepColor,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
-              border: Border.all(
-                color: AppTheme.textDescColor.withAlpha(20),
-              ),
-            ),
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                // Header with grab handle and buttons (not scrollable)
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      // Grab handle
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(top: 12, bottom: 8),
-                        child: _buildGrabHandle(),
-                      ),
-
-                      // Two buttons in a row
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _buildToggleButton(
-                                label: 'Description',
-                                isSelected: _selectedContent == 'description',
-                                onTap: () {
-                                  setState(() {
-                                    _selectedContent = 'description';
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildToggleButton(
-                                label: 'Specification',
-                                isSelected: _selectedContent == 'specification',
-                                onTap: () {
-                                  setState(() {
-                                    _selectedContent = 'specification';
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-
-                // Content area (scrollable within the sheet)
-                _selectedContent == 'description'
-                    ? _DescriptionTabSliver(product: widget.product)
-                    : _SpecificationTabSliver(product: widget.product),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildGrabHandle() {
-    return Center(
-      child: Container(
-        width: 50,
-        height: 5,
-        decoration: BoxDecoration(
-          color: AppTheme.textDescColor.withAlpha(100),
-          borderRadius: BorderRadius.circular(3),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildToggleButton({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          gradient: isSelected ? AppTheme.primaryGradient : null,
-          color: isSelected ? null : AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.textDescColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 /// Description tab content (Sliver version)
