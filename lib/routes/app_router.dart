@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bikex/auth/auth.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/view/product_detail_page.dart';
+import 'package:bikex/examples/test.dart';
 import 'package:bikex/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,8 @@ abstract class AppRoutes {
 
   /// Helper to build product detail path
   static String productDetailPath(String productId) => '/product/$productId';
+
+  static const String test = '/test';
 }
 
 /// Application router configuration
@@ -43,13 +46,13 @@ class AppRouter {
     return switch (authState) {
       // Still loading auth state
       AuthUnknown() => isOnSplash ? null : AppRoutes.splash,
-      
+
       // Not authenticated - redirect to login
-      AuthUnauthenticated() || AuthError() => 
-        isOnAuthPage ? null : AppRoutes.login,
-      
+      AuthUnauthenticated() ||
+      AuthError() => isOnAuthPage ? null : AppRoutes.login,
+
       // Authenticated - redirect away from auth pages
-      AuthAuthenticated() => 
+      AuthAuthenticated() =>
         (isOnAuthPage || isOnSplash) ? AppRoutes.home : null,
     };
   }
@@ -82,6 +85,11 @@ class AppRouter {
         final productId = state.pathParameters['productId']!;
         return ProductDetailPage(productId: productId);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.test,
+      name: 'test',
+      builder: (context, state) => TestScreen(),
     ),
   ];
 }
