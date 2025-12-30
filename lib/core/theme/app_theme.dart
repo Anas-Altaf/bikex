@@ -53,7 +53,7 @@ class AppTheme {
     end: Alignment.bottomRight,
     stops: [0.0, 1.0],
     colors: [
-      Color(0xFF353F54),
+      Color(0xFF3D4A64),
       Color(0xFF222834),
     ],
   ).withOpacity(0.6);
