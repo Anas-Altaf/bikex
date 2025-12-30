@@ -5,7 +5,6 @@ import 'package:bikex/bikes/widgets/product_bottom_sheet.dart';
 import 'package:bikex/bikes/widgets/product_image_carousel.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -86,7 +85,11 @@ class _ProductDetailContent extends StatelessWidget {
                       // App bar using CustomAppBar
                       CustomAppBar(
                         title: product.name.toUpperCase(),
-                        onTap: () => iconRotation == 0 ? context.pop() : null,
+                        onTap: () => iconRotation == 0
+                            ? context.pop()
+                            : context
+                                .read<ProductDetailSheetCubit>()
+                                .collapseSheet(),
                         iconRoation: iconRotation,
                       ),
 

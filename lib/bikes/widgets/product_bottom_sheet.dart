@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/models/product.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
 /// Draggable bottom sheet for product details with tabbed content
@@ -47,24 +49,47 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     );
   }
 
+  // function to collapse to _minSize
+  void _collapseSheet() {
+    unawaited(
+      _sheetController.animateTo(
+        _minSize,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: _sheetController,
-      initialChildSize: _minSize, // Just show buttons initially
-      minChildSize: _minSize, // Minimum just buttons
-      maxChildSize: _maxSize, // Maximum when expanded
-      snap: true,
-      snapSizes: const [_minSize, _maxSize],
-      builder: (context, scrollController) {
-        return NotificationListener<DraggableScrollableNotification>(
-          onNotification: (notification) {
-            widget.onSizeChanged(notification.extent);
+    return BlocListener<ProductDetailSheetCubit, ProductDetailSheetState>(
+      listener: (context, state) {
+        // If cubit requests collapse and controller is attached
+        if (state.sheetSize == _minSize && _sheetController.isAttached) {
+          // Check if the current sheet position is NOT at minimum
+          final currentSize = _sheetController.size;
+          if (currentSize > _minSize + 0.01) {
+            // Sheet is expanded, so collapse it
+            _collapseSheet();
+          }
+        }
+      },
+      child: DraggableScrollableSheet(
+        controller: _sheetController,
+        initialChildSize: _minSize, // Just show buttons initially
+        minChildSize: _minSize, // Minimum just buttons
+        maxChildSize: _maxSize, // Maximum when expanded
+        snap: true,
+        snapSizes: const [_minSize, _maxSize],
+        builder: (context, scrollController) {
+          return NotificationListener<DraggableScrollableNotification>(
+            onNotification: (notification) {
+              widget.onSizeChanged(notification.extent);
 
-            if (notification.extent == _minSize) {
-              setState(() {
-                _selectedContent = 'none';
-              });
+              if (notification.extent == _minSize) {
+                setState(() {
+                  _selectedContent = 'none';
+                });
             } else if (notification.extent > _minSize &&
                 _selectedContent == 'none') {
               // set select content to description
@@ -153,6 +178,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
           ),
         );
       },
+      ),
     );
   }
 

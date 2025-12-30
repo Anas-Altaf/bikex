@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 /// State for product detail bottom sheet
 class ProductDetailSheetState {
-  const ProductDetailSheetState({this.sheetSize = 0.15});
+  const ProductDetailSheetState({this.sheetSize = 0.13});
 
   final double sheetSize;
 
@@ -22,6 +22,11 @@ class ProductDetailSheetCubit extends Cubit<ProductDetailSheetState> {
     if (state.sheetSize != size) {
       emit(state.copyWith(sheetSize: size));
     }
+  }
+
+  /// Collapse the sheet to its initial size
+  void collapseSheet() {
+    emit(state.copyWith(sheetSize: 0.13));
   }
 
   /// get current sheet size
