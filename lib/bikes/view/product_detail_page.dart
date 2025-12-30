@@ -3,6 +3,7 @@ import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/widgets/diagonal_painter.dart';
 import 'package:bikex/bikes/widgets/product_bottom_sheet.dart';
 import 'package:bikex/bikes/widgets/product_image_carousel.dart';
+import 'package:bikex/core/constants.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +62,17 @@ class _ProductDetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Cache screen height to avoid repeated MediaQuery calls
+    final screenHeight = MediaQuery.of(context).size.height;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
     return BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
       builder: (context, sheetState) {
-        final screenHeight = MediaQuery.of(context).size.height;
         final sheetSize = sheetState.sheetSize;
-        final iconRotation = (((sheetSize - 0.13) / 0.37) * -90.0).clamp(
-          -90.0,
-          0.0,
+        
+        // Calculate icon rotation using helper method
+        final iconRotation = ProductDetailConstants.calculateIconRotation(
+          sheetSize,
         );
 
         return Scaffold(
@@ -76,7 +81,7 @@ class _ProductDetailContent extends StatelessWidget {
             child: Stack(
               children: [
                 // Diagonal gradient background
-                _DiagonalBackground(),
+                const _DiagonalBackground(),
 
                 // Main content
                 SafeArea(
@@ -85,7 +90,8 @@ class _ProductDetailContent extends StatelessWidget {
                       // App bar using CustomAppBar
                       CustomAppBar(
                         title: product.name.toUpperCase(),
-                        onTap: () => iconRotation == 0
+                        onTap: () => iconRotation ==
+                                ProductDetailConstants.minRotationAngle
                             ? context.pop()
                             : context
                                 .read<ProductDetailSheetCubit>()
@@ -94,33 +100,13 @@ class _ProductDetailContent extends StatelessWidget {
                       ),
 
                       // Hero product images carousel - dynamically sized
-                      Builder(
-                        builder: (context) {
-                          // Get dimensions
-                          const appBarHeight = 90.0;
-                          final statusBarHeight = MediaQuery.of(
-                            context,
-                          ).padding.top;
-
-                          // Calculate available height for image area
-                          final availableHeight =
-                              screenHeight - statusBarHeight - appBarHeight;
-
-                          // Calculate how much space the sheet takes
-                          final sheetHeight = screenHeight * sheetSize;
-
-                          // Remaining space for image (with some padding)
-                          final imageHeight =
-                              (availableHeight - sheetHeight - 60).clamp(
-                                150.0, // Minimum height
-                                availableHeight * 0.9, // Maximum height
-                              );
-
-                          return ProductImageCarousel(
-                            product: product,
-                            imageHeight: imageHeight,
-                          );
-                        },
+                      ProductImageCarousel(
+                        product: product,
+                        imageHeight: ProductDetailConstants.calculateImageHeight(
+                          screenHeight: screenHeight,
+                          statusBarHeight: statusBarHeight,
+                          sheetSize: sheetSize,
+                        ),
                       ),
 
                       // Spacer to push everything up
@@ -149,6 +135,8 @@ class _ProductDetailContent extends StatelessWidget {
 
 /// Diagonal split background
 class _DiagonalBackground extends StatelessWidget {
+  const _DiagonalBackground();
+
   @override
   Widget build(BuildContext context) {
     return CustomPaint(

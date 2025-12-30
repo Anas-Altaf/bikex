@@ -9,11 +9,11 @@ class BikesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
+    return const CustomScrollView(
       slivers: [
-        const SliverToBoxAdapter(child: HeroCard()),
+        SliverToBoxAdapter(child: HeroCard()),
         SliverToBoxAdapter(child: LadderRow()),
-        const ProductsList(),
+        ProductsList(),
       ],
     );
   }

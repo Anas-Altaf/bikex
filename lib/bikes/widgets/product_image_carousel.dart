@@ -1,4 +1,5 @@
 import 'package:bikex/bikes/models/product.dart';
+import 'package:bikex/core/constants.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,6 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
           width: double.infinity,
           child: CarouselSlider.builder(
             itemCount: images.length,
-
             itemBuilder: (context, index, realIndex) {
               return Hero(
                 tag: 'product_image_${widget.product.id}',
@@ -49,11 +49,10 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
             },
             options: CarouselOptions(
               height: widget.imageHeight,
-
               viewportFraction: 1,
               enableInfiniteScroll: images.length > 1,
               autoPlay: true,
-              autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+              autoPlayAnimationDuration: ProductDetailConstants.carouselDuration,
               onPageChanged: (index, reason) {
                 setState(() {
                   _currentIndex = index;
@@ -65,15 +64,19 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
 
         // Dots indicator
         if (images.length > 1) ...[
-          const SizedBox(height: 16),
+          const SizedBox(
+            height: ProductDetailConstants.carouselDotsSpacing,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               images.length,
               (index) => Container(
-                width: 6,
-                height: 6,
-                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: ProductDetailConstants.dotIndicatorSize,
+                height: ProductDetailConstants.dotIndicatorSize,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: ProductDetailConstants.dotIndicatorMargin,
+                ),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _currentIndex == index

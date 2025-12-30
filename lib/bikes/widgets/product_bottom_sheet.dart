@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/models/product.dart';
+import 'package:bikex/core/constants.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,35 +27,29 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
-  // Track which content to show: 'description' or 'specification'
-  String _selectedContent = 'none';
-  static const double _maxSize = 0.5;
-  // minimum size
-  static const double _minSize = 0.13;
-
   @override
   void dispose() {
     _sheetController.dispose();
     super.dispose();
   }
 
-  // function to Full Expand to _maxSize
+  /// Expand sheet to maximum size
   void _expandSheet() {
     unawaited(
       _sheetController.animateTo(
-        _maxSize,
-        duration: const Duration(milliseconds: 100),
+        ProductDetailConstants.sheetMaxSize,
+        duration: ProductDetailConstants.expandDuration,
         curve: Curves.easeInOut,
       ),
     );
   }
 
-  // function to collapse to _minSize
+  /// Collapse sheet to minimum size
   void _collapseSheet() {
     unawaited(
       _sheetController.animateTo(
-        _minSize,
-        duration: const Duration(milliseconds: 300),
+        ProductDetailConstants.sheetMinSize,
+        duration: ProductDetailConstants.collapseDuration,
         curve: Curves.easeInOut,
       ),
     );
@@ -65,10 +60,13 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     return BlocListener<ProductDetailSheetCubit, ProductDetailSheetState>(
       listener: (context, state) {
         // If cubit requests collapse and controller is attached
-        if (state.sheetSize == _minSize && _sheetController.isAttached) {
+        if (state.sheetSize == ProductDetailConstants.sheetMinSize &&
+            _sheetController.isAttached) {
           // Check if the current sheet position is NOT at minimum
           final currentSize = _sheetController.size;
-          if (currentSize > _minSize + 0.01) {
+          if (currentSize >
+              ProductDetailConstants.sheetMinSize +
+                  ProductDetailConstants.sheetPositionTolerance) {
             // Sheet is expanded, so collapse it
             _collapseSheet();
           }
@@ -76,126 +74,137 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
       },
       child: DraggableScrollableSheet(
         controller: _sheetController,
-        initialChildSize: _minSize, // Just show buttons initially
-        minChildSize: _minSize, // Minimum just buttons
-        maxChildSize: _maxSize, // Maximum when expanded
+        initialChildSize: ProductDetailConstants.sheetMinSize,
+        minChildSize: ProductDetailConstants.sheetMinSize,
+        maxChildSize: ProductDetailConstants.sheetMaxSize,
         snap: true,
-        snapSizes: const [_minSize, _maxSize],
+        snapSizes: const [
+          ProductDetailConstants.sheetMinSize,
+          ProductDetailConstants.sheetMaxSize,
+        ],
         builder: (context, scrollController) {
           return NotificationListener<DraggableScrollableNotification>(
             onNotification: (notification) {
               widget.onSizeChanged(notification.extent);
-
-              if (notification.extent == _minSize) {
-                setState(() {
-                  _selectedContent = 'none';
-                });
-            } else if (notification.extent > _minSize &&
-                _selectedContent == 'none') {
-              // set select content to description
-              setState(() {
-                _selectedContent = 'description';
-              });
-            }
-
-            return true;
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              // color: AppTheme.backgroundDeepColor,
-              gradient: AppTheme.sheetGradient,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
-              border: Border.all(
-                color: AppTheme.sheetBorderColor,
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 60,
-                  color: AppTheme.shadowColor.withAlpha(63),
-                  offset: const Offset(0, -20),
-                ),
-              ],
-            ),
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                // Header with grab handle and buttons
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 35,
-                      ),
-
-                      // Toggle buttons
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _buildToggleButton(
-                                label: 'Description',
-                                isSelected: _selectedContent == 'description',
-                                onTap: () {
-                                  _expandSheet();
-                                  setState(() {
-                                    _selectedContent = 'description';
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 30),
-                            Expanded(
-                              child: _buildToggleButton(
-                                label: 'Specification',
-                                isSelected: _selectedContent == 'specification',
-                                onTap: () {
-                                  _expandSheet();
-                                  setState(() {
-                                    _selectedContent = 'specification';
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 35),
-                    ],
+              return true;
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.sheetGradient,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(
+                    ProductDetailConstants.sheetBorderRadius,
                   ),
                 ),
+                border: Border.all(
+                  color: AppTheme.sheetBorderColor,
+                  width: ProductDetailConstants.sheetBorderWidth,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: ProductDetailConstants.sheetShadowBlur,
+                    color: AppTheme.shadowColor.withAlpha(
+                      ProductDetailConstants.sheetShadowAlpha,
+                    ),
+                    offset: const Offset(
+                      0,
+                      ProductDetailConstants.sheetShadowOffsetY,
+                    ),
+                  ),
+                ],
+              ),
+              child:
+                  BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
+                    builder: (context, sheetState) {
+                      return CustomScrollView(
+                        controller: scrollController,
+                        slivers: [
+                          // Header with toggle buttons
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: ProductDetailConstants
+                                      .toggleButtonTopSpacing,
+                                ),
 
-                // Content area (scrollable)
-                if (_selectedContent == 'specification')
-                  _SpecificationTabSliver(product: widget.product)
-                else
-                  _DescriptionTabSliver(product: widget.product),
-              ],
+                                // Toggle buttons
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: ProductDetailConstants
+                                        .toggleButtonContainerPadding,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildToggleButton(
+                                          context: context,
+                                          label: 'Description',
+                                          isSelected:
+                                              sheetState.selectedTab ==
+                                              ProductDetailTab.description,
+                                          onTap: () {
+                                            _expandSheet();
+                                            context
+                                                .read<ProductDetailSheetCubit>()
+                                                .selectTab(
+                                                  ProductDetailTab.description,
+                                                );
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: ProductDetailConstants
+                                            .toggleButtonSpacing,
+                                      ),
+                                      Expanded(
+                                        child: _buildToggleButton(
+                                          context: context,
+                                          label: 'Specification',
+                                          isSelected:
+                                              sheetState.selectedTab ==
+                                              ProductDetailTab.specification,
+                                          onTap: () {
+                                            _expandSheet();
+                                            context
+                                                .read<ProductDetailSheetCubit>()
+                                                .selectTab(
+                                                  ProductDetailTab
+                                                      .specification,
+                                                );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: ProductDetailConstants
+                                      .toggleButtonBottomSpacing,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Content area (scrollable)
+                          if (sheetState.selectedTab ==
+                              ProductDetailTab.specification)
+                            _SpecificationTabSliver(product: widget.product)
+                          else
+                            _DescriptionTabSliver(product: widget.product),
+                        ],
+                      );
+                    },
+                  ),
             ),
-          ),
-        );
-      },
+          );
+        },
       ),
     );
   }
 
-  // Widget _buildGrabHandle() {
-  //   return Center(
-  //     child: Container(
-  //       width: 50,
-  //       height: 5,
-  //       decoration: BoxDecoration(
-  //         color: AppTheme.textDescColor.withAlpha(100),
-  //         borderRadius: BorderRadius.circular(3),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildToggleButton({
+    required BuildContext context,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -203,45 +212,54 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(
+          vertical: ProductDetailConstants.toggleButtonPaddingVertical,
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? AppTheme.backgroundSurfaceColor
               : AppTheme.backgroundDeepColor,
-          borderRadius: BorderRadius.circular(10),
-
+          borderRadius: BorderRadius.circular(
+            ProductDetailConstants.toggleButtonBorderRadius,
+          ),
           boxShadow: !isSelected
               ? [
                   BoxShadow(
                     color: AppTheme.textColor.withAlpha(25),
-                    // blurStyle: .inner,
-                    blurRadius: 4,
-                    offset: const Offset(-4, -4),
+                    blurRadius: ProductDetailConstants.toggleButtonShadowBlur,
+                    offset: const Offset(
+                      -ProductDetailConstants.toggleButtonShadowOffset,
+                      -ProductDetailConstants.toggleButtonShadowOffset,
+                    ),
                     inset: true,
                   ),
-
                   BoxShadow(
                     color: AppTheme.shadowColor.withAlpha(100),
-                    // blurStyle: .inner,
-                    blurRadius: 4,
-                    offset: const Offset(4, 4),
+                    blurRadius: ProductDetailConstants.toggleButtonShadowBlur,
+                    offset: const Offset(
+                      ProductDetailConstants.toggleButtonShadowOffset,
+                      ProductDetailConstants.toggleButtonShadowOffset,
+                    ),
                     inset: true,
                   ),
                 ]
               : [
                   BoxShadow(
                     color: AppTheme.textColor.withAlpha(15),
-                    // blurStyle: BlurStyle.outer,
-                    blurRadius: 4,
-                    offset: const Offset(-4, -4),
-                    // inset: true,
+                    blurRadius: ProductDetailConstants.toggleButtonShadowBlur,
+                    offset: const Offset(
+                      -ProductDetailConstants.toggleButtonShadowOffset,
+                      -ProductDetailConstants.toggleButtonShadowOffset,
+                    ),
                   ),
                   BoxShadow(
                     color: AppTheme.shadowColor.withAlpha(100),
-                    // blurStyle: .inner,
-                    blurRadius: 10,
-                    offset: const Offset(4, 4),
-                    // inset: true,
+                    blurRadius:
+                        ProductDetailConstants.toggleButtonShadowBlur * 2.5,
+                    offset: const Offset(
+                      ProductDetailConstants.toggleButtonShadowOffset,
+                      ProductDetailConstants.toggleButtonShadowOffset,
+                    ),
                   ),
                 ],
         ),
@@ -253,7 +271,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                   ? AppTheme.primaryColor
                   : AppTheme.textDescColor,
               fontSize: 15,
-              fontWeight: isSelected ? .bold : .normal,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),

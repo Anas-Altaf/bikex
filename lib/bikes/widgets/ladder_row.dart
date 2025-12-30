@@ -80,11 +80,12 @@ class LadderRow extends StatelessWidget {
       iconHeight: 25,
       replacedWidget: iconName.isEmpty
           ? Padding(
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Text(
                 categoryName,
                 style: TextStyle(
                   color: isSelected ? Colors.white : AppTheme.textDescColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             )

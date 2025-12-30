@@ -49,13 +49,14 @@ class AppTheme {
 
   // primary card gradient
   static LinearGradient primaryCardGradient = const LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
     colors: [
-      Color(0xFF363E51),
-      Color(0xFF191E26),
+      Color(0xFF353F54),
+      Color(0xFF222834),
     ],
-  ).withOpacity(0.8);
+  ).withOpacity(0.6);
 
   // secondary card gradient
   static LinearGradient secondaryCardGradient = const LinearGradient(
@@ -77,8 +78,8 @@ class AppTheme {
   );
   // Image Blur
   static final ImageFilter primaryBlurFilter = ImageFilter.blur(
-    sigmaX: 30,
-    sigmaY: 30,
+    sigmaX: 40,
+    sigmaY: 40,
   );
 
   // Radius
