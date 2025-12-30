@@ -124,7 +124,7 @@ class _TabItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  size: isActive ? 28 : 20,
+                  size: isActive ? 28 : 24,
                   color: isActive
                       ? AppTheme.textColor
                       : AppTheme.textColor.withAlpha(150),
