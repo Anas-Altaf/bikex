@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bikex/bikes/models/product.dart';
 import 'package:bikex/core/theme/app_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
 /// Draggable bottom sheet for product details with tabbed content
 class ProductBottomSheet extends StatefulWidget {
@@ -22,7 +25,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
       DraggableScrollableController();
 
   // Track which content to show: 'description' or 'specification'
-  String _selectedContent = 'description';
+  String _selectedContent = 'none';
+  static const double _maxSize = 0.5;
+  // minimum size
+  static const double _minSize = 0.13;
 
   @override
   void dispose() {
@@ -30,30 +36,63 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     super.dispose();
   }
 
+  // function to Full Expand to _maxSize
+  void _expandSheet() {
+    unawaited(
+      _sheetController.animateTo(
+        _maxSize,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: _sheetController,
-      initialChildSize: 0.15, // Just show buttons initially
-      minChildSize: 0.15, // Minimum just buttons
-      maxChildSize: 0.7, // Maximum when expanded
+      initialChildSize: _minSize, // Just show buttons initially
+      minChildSize: _minSize, // Minimum just buttons
+      maxChildSize: _maxSize, // Maximum when expanded
       snap: true,
-      snapSizes: const [0.15, 0.7],
+      snapSizes: const [_minSize, _maxSize],
       builder: (context, scrollController) {
         return NotificationListener<DraggableScrollableNotification>(
           onNotification: (notification) {
             widget.onSizeChanged(notification.extent);
+
+            if (notification.extent == _minSize) {
+              setState(() {
+                _selectedContent = 'none';
+              });
+            } else if (notification.extent > _minSize &&
+                _selectedContent == 'none') {
+              // set select content to description
+              setState(() {
+                _selectedContent = 'description';
+              });
+            }
+
             return true;
           },
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.backgroundDeepColor,
+              // color: AppTheme.backgroundDeepColor,
+              gradient: AppTheme.sheetGradient,
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(30),
               ),
               border: Border.all(
-                color: AppTheme.textDescColor.withAlpha(20),
+                color: AppTheme.sheetBorderColor,
+                width: 2,
               ),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 60,
+                  color: AppTheme.shadowColor.withAlpha(63),
+                  offset: const Offset(0, -20),
+                ),
+              ],
             ),
             child: CustomScrollView(
               controller: scrollController,
@@ -62,13 +101,13 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 30,
+                      const SizedBox(
+                        height: 35,
                       ),
 
                       // Toggle buttons
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Row(
                           children: [
                             Expanded(
@@ -76,18 +115,20 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                 label: 'Description',
                                 isSelected: _selectedContent == 'description',
                                 onTap: () {
+                                  _expandSheet();
                                   setState(() {
                                     _selectedContent = 'description';
                                   });
                                 },
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 30),
                             Expanded(
                               child: _buildToggleButton(
                                 label: 'Specification',
                                 isSelected: _selectedContent == 'specification',
                                 onTap: () {
+                                  _expandSheet();
                                   setState(() {
                                     _selectedContent = 'specification';
                                   });
@@ -97,16 +138,16 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 35),
                     ],
                   ),
                 ),
 
                 // Content area (scrollable)
-                if (_selectedContent == 'description')
-                  _DescriptionTabSliver(product: widget.product)
+                if (_selectedContent == 'specification')
+                  _SpecificationTabSliver(product: widget.product)
                 else
-                  _SpecificationTabSliver(product: widget.product),
+                  _DescriptionTabSliver(product: widget.product),
               ],
             ),
           ),
@@ -115,18 +156,18 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     );
   }
 
-  Widget _buildGrabHandle() {
-    return Center(
-      child: Container(
-        width: 50,
-        height: 5,
-        decoration: BoxDecoration(
-          color: AppTheme.textDescColor.withAlpha(100),
-          borderRadius: BorderRadius.circular(3),
-        ),
-      ),
-    );
-  }
+  // Widget _buildGrabHandle() {
+  //   return Center(
+  //     child: Container(
+  //       width: 50,
+  //       height: 5,
+  //       decoration: BoxDecoration(
+  //         color: AppTheme.textDescColor.withAlpha(100),
+  //         borderRadius: BorderRadius.circular(3),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildToggleButton({
     required String label,
@@ -136,19 +177,57 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          gradient: isSelected ? AppTheme.primaryGradient : null,
-          color: isSelected ? null : AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(30),
+          color: isSelected
+              ? AppTheme.backgroundSurfaceColor
+              : AppTheme.backgroundDeepColor,
+          borderRadius: BorderRadius.circular(10),
+
+          boxShadow: !isSelected
+              ? [
+                  BoxShadow(
+                    color: AppTheme.textColor.withAlpha(25),
+                    // blurStyle: .inner,
+                    blurRadius: 4,
+                    offset: const Offset(-4, -4),
+                    inset: true,
+                  ),
+
+                  BoxShadow(
+                    color: AppTheme.shadowColor.withAlpha(100),
+                    // blurStyle: .inner,
+                    blurRadius: 4,
+                    offset: const Offset(4, 4),
+                    inset: true,
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: AppTheme.textColor.withAlpha(15),
+                    // blurStyle: BlurStyle.outer,
+                    blurRadius: 4,
+                    offset: const Offset(-4, -4),
+                    // inset: true,
+                  ),
+                  BoxShadow(
+                    color: AppTheme.shadowColor.withAlpha(100),
+                    // blurStyle: .inner,
+                    blurRadius: 10,
+                    offset: const Offset(4, 4),
+                    // inset: true,
+                  ),
+                ],
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.textDescColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? AppTheme.primaryColor
+                  : AppTheme.textDescColor,
+              fontSize: 15,
+              fontWeight: isSelected ? .bold : .normal,
             ),
           ),
         ),
@@ -173,7 +252,7 @@ class _DescriptionTabSliver extends StatelessWidget {
             product.name.toUpperCase(),
             style: const TextStyle(
               color: AppTheme.textColor,
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
             ),
           ),

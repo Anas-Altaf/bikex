@@ -2,8 +2,10 @@ import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/widgets/diagonal_painter.dart';
 import 'package:bikex/bikes/widgets/product_bottom_sheet.dart';
+import 'package:bikex/bikes/widgets/product_image_carousel.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +66,10 @@ class _ProductDetailContent extends StatelessWidget {
       builder: (context, sheetState) {
         final screenHeight = MediaQuery.of(context).size.height;
         final sheetSize = sheetState.sheetSize;
+        final iconRotation = (((sheetSize - 0.13) / 0.37) * -90.0).clamp(
+          -90.0,
+          0.0,
+        );
 
         return Scaffold(
           backgroundColor: AppTheme.backgroundColor,
@@ -80,14 +86,15 @@ class _ProductDetailContent extends StatelessWidget {
                       // App bar using CustomAppBar
                       CustomAppBar(
                         title: product.name.toUpperCase(),
-                        onTap: () => context.pop(),
+                        onTap: () => iconRotation == 0 ? context.pop() : null,
+                        iconRoation: iconRotation,
                       ),
 
-                      // Hero product image - dynamically sized based on sheet position
+                      // Hero product images carousel - dynamically sized
                       Builder(
                         builder: (context) {
                           // Get dimensions
-                          final appBarHeight = 60.0;
+                          const appBarHeight = 90.0;
                           final statusBarHeight = MediaQuery.of(
                             context,
                           ).padding.top;
@@ -101,25 +108,14 @@ class _ProductDetailContent extends StatelessWidget {
 
                           // Remaining space for image (with some padding)
                           final imageHeight =
-                              (availableHeight - sheetHeight - 40).clamp(
+                              (availableHeight - sheetHeight - 60).clamp(
                                 150.0, // Minimum height
                                 availableHeight * 0.9, // Maximum height
                               );
 
-                          return SizedBox(
-                            height: imageHeight,
-                            width: double.infinity,
-                            child: Center(
-                              child: Hero(
-                                tag: 'product_image_${product.id}',
-                                child: Image.asset(
-                                  product.imageAsset ??
-                                      'assets/images/cycle_01.png',
-                                  fit: BoxFit.contain,
-                                  width: double.infinity,
-                                ),
-                              ),
-                            ),
+                          return ProductImageCarousel(
+                            product: product,
+                            imageHeight: imageHeight,
                           );
                         },
                       ),

@@ -76,16 +76,15 @@ class LadderRow extends StatelessWidget {
       gradient: AppTheme.secondaryCardGradient,
       assetName: iconName.isNotEmpty ? 'assets/icons/$iconName.svg' : null,
       iconColor: isSelected ? Colors.white : AppTheme.textDescColor,
-      iconWidth: 28,
-      iconHeight: 28,
+      iconWidth: 25,
+      iconHeight: 25,
       replacedWidget: iconName.isEmpty
           ? Padding(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(2),
               child: Text(
                 categoryName,
                 style: TextStyle(
                   color: isSelected ? Colors.white : AppTheme.textDescColor,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             )

@@ -19,7 +19,11 @@ The Thunder Bolt is our flagship electric bike designed for riders who demand bo
 The integrated 48V lithium-ion battery provides an impressive 80km range on a single charge, making it perfect for daily commutes and weekend adventures alike. The sleek Midnight Blue frame is crafted from lightweight aluminum alloy with internal cable routing for a clean, modern aesthetic.
 
 Advanced features include regenerative braking, LCD display with trip computer, USB charging port, and integrated LED lighting system. Whether you're conquering hills or cruising through city streets, the Thunder Bolt delivers an unparalleled electric riding experience.''',
-      imageAsset: 'assets/images/cycle_01.png',
+      images: [
+        'assets/images/cycle_01.png',
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'Midnight Blue',
         'Size': 'Medium',
@@ -42,7 +46,11 @@ The Road Master is engineered for speed enthusiasts who crave performance withou
 The aerodynamic tube profiles minimize drag while the responsive geometry puts you in an aggressive, efficient riding position. Equipped with Shimano 105 22-speed groupset for precise, reliable shifting across any terrain.
 
 Premium components include Continental Grand Prix tires for exceptional grip and low rolling resistance, Mavic Aksium wheelset, and ergonomic handlebar tape. Whether training for your next race or enjoying a spirited weekend ride, the Road Master delivers pure road cycling excellence.''',
-      imageAsset: 'assets/images/cycle_02.png',
+      images: [
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_01.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'Racing Red',
         'Size': 'Large',
@@ -65,7 +73,11 @@ Conquer any terrain with the Trail Blazer, our most versatile mountain bike desi
 The hydroformed aluminum frame strikes the perfect balance between strength and weight, while the slack 66-degree head angle provides confident handling on steep descents. Wide 29-inch tubeless-ready wheels roll over obstacles with ease.
 
 Features include SRAM GX Eagle 12-speed drivetrain, hydraulic disc brakes with 180mm rotors, dropper seatpost ready frame, and internal cable routing. Take on the gnarliest trails with confidence.''',
-      imageAsset: 'assets/images/cycle_03.png',
+      images: [
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'Forest Green',
         'Size': 'Medium',
@@ -88,7 +100,11 @@ The City Cruiser redefines urban mobility with its perfect blend of comfort, sty
 Designed for the daily commuter, it features a spacious rear basket, full-length fenders to keep you dry, and an integrated LED lighting system powered by the hub dynamo - no batteries needed. The puncture-resistant tires and low-maintenance internal 7-speed hub ensure a worry-free ride.
 
 Additional features include a cushioned saddle with suspension seatpost, ergonomic grips, and a kickstand. Available in Matte Black, the City Cruiser is your reliable partner for everyday urban adventures.''',
-      imageAsset: 'assets/images/cycle_04.png',
+      images: [
+        'assets/images/cycle_04.png',
+        'assets/images/cycle_04.png',
+        'assets/images/cycle_04.png',
+      ],
       specifications: {
         'Color': 'Matte Black',
         'Size': 'Medium',
@@ -111,7 +127,11 @@ Experience the future of cycling with the Volt Rider, our premium electric bike 
 The high-capacity 52V battery delivers an exceptional 100km range, while the smart connectivity allows you to track rides, adjust settings, and receive OTA updates through the companion app. The torque sensor provides responsive, natural-feeling pedal assist across 5 power levels.
 
 Premium features include integrated GPS tracking, anti-theft alarm, automatic lights, and a color LCD display. The sleek silver frame houses all electronics seamlessly, creating a sophisticated urban machine that turns heads.''',
-      imageAsset: 'assets/images/cycle_01.png',
+      images: [
+        'assets/images/cycle_03.png',
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'Silver',
         'Size': 'Large',
@@ -134,7 +154,11 @@ The Speed Demon is built for one purpose: pure speed. Every component has been s
 Shimano Ultegra R8000 22-speed groupset delivers race-proven shifting performance, while the full carbon fork and seatpost further reduce weight and absorb road vibrations. Deep-section Fulcrum Racing wheels cut through the air with minimal resistance.
 
 Race-ready features include hidden cable routing, direct-mount brakes, and integration points for power meters. Whether competing in crits or chasing Strava KOMs, the Speed Demon is your weapon of choice.''',
-      imageAsset: 'assets/images/cycle_02.png',
+      images: [
+        'assets/images/cycle_03.png',
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'White',
         'Size': 'Small',
@@ -157,7 +181,11 @@ Built tough for riders who push limits, the Rock Hopper is an aggressive hardtai
 The geometry is optimized for modern trail riding with a short stem, wide bars, and compatible with 1x drivetrains. The SRAM SX Eagle 12-speed provides a huge gear range for any gradient, while the powerful Shimano hydraulic disc brakes inspire confidence on steep descents.
 
 Tubeless-ready 27.5-inch wheels offer a nimble, playful feel, perfect for tight switchbacks and technical features. Internal dropper post routing keeps your options open for future upgrades.''',
-      imageAsset: 'assets/images/cycle_03.png',
+      images: [
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_02.png',
+        'assets/images/cycle_03.png',
+      ],
       specifications: {
         'Color': 'Orange',
         'Size': 'Large',
@@ -180,7 +208,11 @@ Minimalist design meets maximum functionality in the Urban Glide. This stylish c
 The lightweight steel frame provides a smooth, comfortable ride, while the swept-back handlebars and cushioned saddle ensure relaxed ergonomics for leisurely rides. The classic brass bell adds a touch of nostalgia and alerts pedestrians gracefully.
 
 Practical features include matching cream fenders, a front basket ready mount, and a sturdy rear rack for panniers. The low-maintenance single-speed drivetrain with coaster brake keeps things simple and reliable.''',
-      imageAsset: 'assets/images/cycle_04.png',
+      images: [
+        'assets/images/cycle_04.png',
+        'assets/images/cycle_04.png',
+        'assets/images/cycle_04.png',
+      ],
       specifications: {
         'Color': 'Cream',
         'Size': 'Medium',

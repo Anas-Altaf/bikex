@@ -23,4 +23,7 @@ class ProductDetailSheetCubit extends Cubit<ProductDetailSheetState> {
       emit(state.copyWith(sheetSize: size));
     }
   }
+
+  /// get current sheet size
+  double get currentSheetSize => state.sheetSize;
 }

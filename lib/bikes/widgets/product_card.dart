@@ -65,9 +65,10 @@ class ProductCard extends StatelessWidget {
                                 child: Hero(
                                   tag: 'product_image_${product.id}',
                                   child: Image.asset(
-                                    product.imageAsset ??
-                                        'assets/images/cycle_01.png',
-                                    fit: BoxFit.cover,
+                                    product.images.isNotEmpty
+                                        ? product.images.first
+                                        : 'assets/images/cycle_01.png',
+                                    fit: BoxFit.contain,
                                     height: 90,
                                   ),
                                 ),

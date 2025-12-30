@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/types/enums.dart';
 import 'package:bikex/core/widgets/primary_icon_btn.dart';
@@ -22,6 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTap,
     this.centerTitle = false,
     this.backgroundColor = AppTheme.backgroundColor,
+    this.iconRoation = 0,
   });
 
   final String title;
@@ -31,6 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TextStyle? titleStyle;
 
   final bool centerTitle;
+  final double? iconRoation;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -51,7 +55,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 titleStyle ??
                 const TextStyle(
                   color: AppTheme.textColor,
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),
           ),
@@ -72,21 +76,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const .symmetric(horizontal: 21, vertical: 15),
-        margin: const .only(left: 0),
+        padding: iconType == AppBarIconType.search
+            ? const .symmetric(horizontal: 12, vertical: 12)
+            : const .symmetric(horizontal: 17, vertical: 12),
+        margin: iconType == AppBarIconType.search
+            ? const EdgeInsets.only(right: 20)
+            : EdgeInsets.zero,
         decoration: BoxDecoration(
-          borderRadius: AppTheme.primaryRadius,
+          borderRadius: .circular(10),
           gradient: AppTheme.primaryGradient,
         ),
 
-        // padding: const EdgeInsets.only(right: 14),
-        child: SvgPicture.asset(
-          'assets/icons/${iconType.name}.svg',
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            AppTheme.textColor,
-            BlendMode.srcIn,
+        child: Transform.rotate(
+          angle: iconRoation! * pi / 180,
+          child: SvgPicture.asset(
+            'assets/icons/${iconType.name}.svg',
+            width: 18,
+            height: 18,
+            colorFilter: const ColorFilter.mode(
+              AppTheme.textColor,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

@@ -8,7 +8,7 @@ class Product extends Equatable {
     required this.category,
     required this.price,
     required this.description,
-    this.imageAsset,
+    this.images = const [],
     this.specifications = const {},
   });
 
@@ -17,7 +17,9 @@ class Product extends Equatable {
   final String category;
   final double price;
   final String description;
-  final String? imageAsset;
+  
+  /// List of image assets for product carousel
+  final List<String> images;
 
   /// Flexible specifications map (color, size, weight, etc.)
   final Map<String, String> specifications;
@@ -29,7 +31,7 @@ class Product extends Equatable {
     String? category,
     double? price,
     String? description,
-    String? imageAsset,
+    List<String>? images,
     Map<String, String>? specifications,
   }) {
     return Product(
@@ -38,7 +40,7 @@ class Product extends Equatable {
       category: category ?? this.category,
       price: price ?? this.price,
       description: description ?? this.description,
-      imageAsset: imageAsset ?? this.imageAsset,
+      images: images ?? this.images,
       specifications: specifications ?? this.specifications,
     );
   }
@@ -50,7 +52,7 @@ class Product extends Equatable {
         category,
         price,
         description,
-        imageAsset,
+        images,
         specifications,
       ];
 }

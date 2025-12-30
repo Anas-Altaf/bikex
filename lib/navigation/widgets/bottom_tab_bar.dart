@@ -46,7 +46,7 @@ class BottomTabBar extends StatelessWidget {
 
             // Tab items
             Positioned(
-              bottom: 5,
+              bottom: 10,
               left: 0,
               right: 0,
               child: Row(
@@ -100,21 +100,22 @@ class _TabItem extends StatelessWidget {
             isActive ? -10 : 0,
             0,
           ),
-          width: isActive ? 67 : 48,
-          height: isActive ? 55 : 48,
+          width: isActive ? 65 : 48,
+          height: isActive ? 50 : 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             gradient: isActive ? AppTheme.primaryGradient : null,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: isActive
-                ? [
-                    const BoxShadow(
-                      color: AppTheme.shadowColor,
-                      blurRadius: 30,
-                      offset: Offset(0, 20),
-                    ),
-                  ]
-                : null,
+
+            // boxShadow: isActive
+            //     ? [
+            //         const BoxShadow(
+            //           color: AppTheme.shadowColor,
+            //           blurRadius: 30,
+            //           offset: Offset(0, 20),
+            //         ),
+            //       ]
+            //     : null,
           ),
           child: Transform(
             transform: Matrix4.skewY(0.15),
@@ -123,7 +124,7 @@ class _TabItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  size: 28,
+                  size: isActive ? 28 : 20,
                   color: isActive
                       ? AppTheme.textColor
                       : AppTheme.textColor.withAlpha(150),
