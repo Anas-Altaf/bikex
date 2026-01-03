@@ -49,7 +49,7 @@ class AppRouter {
 
       // Not authenticated - redirect to login
       AuthUnauthenticated() ||
-      AuthError() => isOnAuthPage ? null : AppRoutes.login,
+      AuthError() => isOnAuthPage ? AppRoutes.home : null,
 
       // Authenticated - redirect away from auth pages
       AuthAuthenticated() =>

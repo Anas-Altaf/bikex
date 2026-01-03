@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  // ------------------
   static const Color primaryUpColor = Color(0xFF37B6E9);
   static const Color primaryColor = Color(0xFF4091ED);
   static const Color primaryDownColor = Color(0xFF4B4CED);

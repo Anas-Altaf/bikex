@@ -106,16 +106,6 @@ class _TabItem extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: isActive ? AppTheme.primaryGradient : null,
             borderRadius: BorderRadius.circular(10),
-
-            // boxShadow: isActive
-            //     ? [
-            //         const BoxShadow(
-            //           color: AppTheme.shadowColor,
-            //           blurRadius: 30,
-            //           offset: Offset(0, 20),
-            //         ),
-            //       ]
-            //     : null,
           ),
           child: Transform(
             transform: Matrix4.skewY(0.15),
@@ -129,17 +119,6 @@ class _TabItem extends StatelessWidget {
                       ? AppTheme.textColor
                       : AppTheme.textColor.withAlpha(150),
                 ),
-                // if (isActive) ...[
-                //   const SizedBox(height: 2),
-                //   Text(
-                //     label,
-                //     style: const TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 8,
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                // ],
               ],
             ),
           ),
