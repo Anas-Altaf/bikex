@@ -12,9 +12,8 @@ class AppTheme {
   static const Color backgroundDeepColor = Color(0xFF28303F);
   static const Color backgroundSurfaceColor = Color(0xFF323B4F);
   static const Color textColor = Color(0xFFFFFFFF);
-  static const Color textDescColor = Color(
-    0x99FFFFFF,
-  ); // Hex #FFFFFF with 60% opacity
+  static const Color textDescColor = Color(0x99FFFFFF);
+  static const Color borderColor01 = Color(0xFF2D3749);
   static const Color shadowColor = Color(0xFF10141C);
   static const Color sheetCardColor = Color(0xFF1F2633);
   // sheet border color
@@ -47,7 +46,15 @@ class AppTheme {
       Color(0xFF4E4AF2),
     ],
   ).withOpacity(0.8);
-
+  // primary gradient 2
+  static LinearGradient primaryGradient2 = const LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF34C8E8),
+      Color(0xFF4E4AF2),
+    ],
+  );
   // primary card gradient
   static LinearGradient primaryCardGradient = const LinearGradient(
     begin: Alignment.topLeft,
@@ -75,6 +82,26 @@ class AppTheme {
     colors: [
       Color(0xFF353F54),
       Color(0xFF222834),
+    ],
+  );
+  // Black and White Border Gradient
+  static LinearGradient blackAndWhiteBorderGradient = const LinearGradient(
+    stops: [0.0, 1.0],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF000000),
+      Color(0xFFFFFFFF),
+    ],
+  ).withOpacity(0.2);
+
+  // Border gradient 01
+  static LinearGradient borderGradient01 = const LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF34C8E8),
+      Color(0xFF4E4AF2),
     ],
   );
   // Image Blur

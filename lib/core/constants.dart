@@ -103,7 +103,7 @@ class ProductDetailConstants {
   static const double toggleButtonTopSpacing = 35;
   
   /// Bottom spacing after toggle buttons
-  static const double toggleButtonBottomSpacing = 35;
+  static const double toggleButtonBottomSpacing = 40;
 
   /// Helper method to calculate icon rotation based on sheet size
   static double calculateIconRotation(double sheetSize) {

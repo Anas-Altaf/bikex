@@ -7,6 +7,7 @@ import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 /// Draggable bottom sheet for product details with tabbed content
 class ProductBottomSheet extends StatefulWidget {
@@ -139,7 +140,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                           if (_sheetController.isAttached) {
                             // Snap to nearest size
                             final currentSize = _sheetController.size;
-                            final midPoint =
+                            const midPoint =
                                 (ProductDetailConstants.sheetMinSize +
                                     ProductDetailConstants.sheetMaxSize) /
                                 2;
@@ -214,20 +215,41 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                         ),
                       ),
 
-                      // Scrollable content area
+                      // Scrollable content area with fixed bottom bar
                       Expanded(
-                        child: CustomScrollView(
-                          controller: scrollController,
-                          slivers: [
-                            if (sheetState.selectedTab ==
-                                ProductDetailTab.specification)
-                              _SpecificationTabSliver(
+                        child: Stack(
+                          children: [
+                            // Scrollable content
+                            CustomScrollView(
+                              controller: scrollController,
+                              slivers: [
+                                if (sheetState.selectedTab ==
+                                    ProductDetailTab.specification)
+                                  _SpecificationTabSliver(
+                                    product: widget.product,
+                                  )
+                                else
+                                  _DescriptionTabSliver(
+                                    product: widget.product,
+                                  ),
+                                // Add bottom padding to prevent content being hidden by bottom bar
+                                const SliverToBoxAdapter(
+                                  child: SizedBox(height: 110),
+                                ),
+                              ],
+                            ),
+
+                            // Fixed bottom bar with price and add to cart
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: _buildBottomBar(
+                                context: context,
                                 product: widget.product,
-                              )
-                            else
-                              _DescriptionTabSliver(
-                                product: widget.product,
+                                sheetSize: sheetState.sheetSize,
                               ),
+                            ),
                           ],
                         ),
                       ),
@@ -313,6 +335,83 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the fixed bottom bar with price and add to cart button
+  Widget _buildBottomBar({
+    required BuildContext context,
+    required Product product,
+    required double sheetSize,
+  }) {
+    // Calculate opacity based on sheet size
+    // Fade in as sheet expands from min to max
+    final opacity =
+        ((sheetSize - ProductDetailConstants.sheetMinSize) /
+                (ProductDetailConstants.sheetMaxSize -
+                    ProductDetailConstants.sheetMinSize))
+            .clamp(0.0, 1.0);
+
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 150),
+      opacity: opacity,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 30),
+        decoration: const BoxDecoration(
+          color: Color(0xFF262E3D),
+          border: Border(
+            top: BorderSide(
+              color: AppTheme.borderColor01,
+              width: 2,
+            ),
+          ),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(50),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Price
+            Text(
+              '\$${product.price.toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: AppTheme.primaryColor,
+                fontSize: 24,
+              ),
+            ),
+
+            // Add to Cart button
+            GestureDetector(
+              onTap: () {
+                // TODO: Implement add to cart functionality
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 38,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  gradient: AppTheme.primaryGradient2,
+                  borderRadius: BorderRadius.circular(12),
+                  border: GradientBoxBorder(
+                    gradient: AppTheme.primaryGradient2,
+                    width: 2,
+                  ),
+                ),
+                child: const Text(
+                  'Add to Cart',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
