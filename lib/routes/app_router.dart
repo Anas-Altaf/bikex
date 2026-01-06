@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bikex/auth/auth.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/view/product_detail_page.dart';
+import 'package:bikex/checkout/checkout.dart';
 import 'package:bikex/examples/test.dart';
 import 'package:bikex/home/home.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ abstract class AppRoutes {
   static const String signup = '/signup';
   static const String home = '/home';
   static const String productDetail = '/product/:productId';
+  static const String checkout = '/checkout';
 
   /// Helper to build product detail path
   static String productDetailPath(String productId) => '/product/$productId';
@@ -86,6 +88,11 @@ class AppRouter {
         final productId = state.pathParameters['productId']!;
         return ProductDetailPage(productId: productId);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.checkout,
+      name: 'checkout',
+      builder: (context, state) => const CheckoutPage(),
     ),
   ];
 }

@@ -1,9 +1,10 @@
 import 'package:bikex/cart/cubit/cubit.dart';
 import 'package:bikex/cart/widgets/widgets.dart';
 import 'package:bikex/core/theme/app_theme.dart';
-import 'package:bikex/core/widgets/toast.dart';
+import 'package:bikex/core/widgets/slide_to_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 /// Shopping cart page displaying cart items, coupon input, and order summary
 class CartPage extends StatelessWidget {
@@ -80,14 +81,11 @@ class CartPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Checkout button
-                  GradientCheckoutButton(
-                    onPressed: () {
-                      // TODO: Navigate to checkout
-                      showToast(
-                        message: 'Proceeding to checkout...',
-                        type: .success,
-                      );
+                  // Slide to checkout button
+                  SlideToActionButton(
+                    label: 'Slide to Checkout',
+                    onSlideComplete: () {
+                      context.push('/checkout');
                     },
                   ),
                   const SizedBox(height: 8),
