@@ -97,7 +97,7 @@ class _CheckoutPageContent extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 40),
                 child: SlideToActionButton(
-                  label: 'Slide to Proceed',
+                  label: 'Proceed',
                   disabled: !state.hasSelectedAddress,
                   onSlideComplete: () {
                     context.read<CheckoutCubit>().placeOrder();

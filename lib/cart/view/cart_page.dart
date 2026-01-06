@@ -7,8 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 /// Shopping cart page displaying cart items, coupon input, and order summary
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  final GlobalKey<SlideToActionButtonState> _sliderKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +90,13 @@ class CartPage extends StatelessWidget {
 
                   // Slide to checkout button
                   SlideToActionButton(
-                    label: 'Slide to Checkout',
+                    key: _sliderKey,
+                    label: 'Checkout',
                     onSlideComplete: () {
-                      context.push('/checkout');
+                      context.push('/checkout').then((_) {
+                        // Reset slider when returning from checkout
+                        _sliderKey.currentState?.reset();
+                      });
                     },
                   ),
                   const SizedBox(height: 8),
