@@ -305,7 +305,7 @@ class _DescriptionTabSliver extends StatelessWidget {
             product.description,
             style: const TextStyle(
               color: AppTheme.textDescColor,
-              fontSize: 14,
+              fontSize: 15,
               height: 1.6,
             ),
           ),
