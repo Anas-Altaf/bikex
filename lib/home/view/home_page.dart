@@ -2,6 +2,7 @@ import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/cart/cart.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/types/enums.dart';
+import 'package:bikex/core/widgets/diagonal_gradient_painter.dart';
 import 'package:bikex/core/widgets/widgets.dart';
 import 'package:bikex/map/map.dart';
 import 'package:bikex/navigation/navigation.dart';
@@ -9,10 +10,12 @@ import 'package:bikex/orders/orders.dart';
 import 'package:bikex/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 /// Index of the cart tab
 const int _cartTabIndex = 2;
+
+/// Index of the bikes tab (shows diagonal gradient background)
+const int _bikesTabIndex = 0;
 
 /// Height of the bottom tab bar for animation
 const double _tabBarHeight = 100;
@@ -44,19 +47,21 @@ class HomePage extends StatelessWidget {
       child: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, navState) {
           final isCartTab = navState.currentIndex == _cartTabIndex;
+          final isBikesTab = navState.currentIndex == _bikesTabIndex;
 
           return Stack(
             children: [
+              // Base background color
               Container(color: AppTheme.backgroundColor),
-              // Container(
-              //   transform: Matrix4.translationValues(0, 75, 0),
-              //   child: SvgPicture.asset(
-              //     'assets/bg/background_shape.svg',
-              //     fit: BoxFit.fitWidth,
-              //     width: double.infinity,
-              //     height: double.infinity,
-              //   ),
-              // ),
+
+              // Diagonal gradient background - only on Bikes tab
+              if (isBikesTab)
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: DiagonalGradientPainter(),
+                  ),
+                ),
+
               Scaffold(
                 backgroundColor: AppTheme.transparentColor,
                 appBar: CustomAppBar(
