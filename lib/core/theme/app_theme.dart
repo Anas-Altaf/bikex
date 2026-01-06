@@ -1,6 +1,7 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
 class AppTheme {
   // ------------------
@@ -65,7 +66,16 @@ class AppTheme {
       Color(0xFF222834),
     ],
   ).withOpacity(0.6);
-
+  // CartCardGradient
+  static LinearGradient cartCardGradient = const LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.0, 1.0],
+    colors: [
+      Color(0xFF4C5770),
+      Color(0xFF363E51),
+    ],
+  );
   // secondary card gradient
   static LinearGradient secondaryCardGradient = const LinearGradient(
     begin: Alignment.topCenter,
@@ -113,5 +123,27 @@ class AppTheme {
   // Radius
   static const BorderRadius primaryRadius = BorderRadius.all(
     Radius.circular(12),
+  );
+
+  // cart Page Box decorations with depth shadows
+  static final boxDecoration01 = BoxDecoration(
+    color: AppTheme.backgroundColor,
+    borderRadius: BorderRadius.circular(8),
+    boxShadow: const [
+      BoxShadow(
+        color: Color(0xFF191E29),
+        offset: Offset(4, 10),
+        blurRadius: 30,
+        spreadRadius: 0,
+        inset: true,
+      ),
+      BoxShadow(
+        color: Color(0xFF191E29),
+        offset: Offset(4, 4),
+        blurRadius: 10,
+        spreadRadius: 0,
+        inset: true,
+      ),
+    ],
   );
 }

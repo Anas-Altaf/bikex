@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/models/product.dart';
+import 'package:bikex/cart/cart.dart';
 import 'package:bikex/core/constants.dart';
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/widgets/primary_button.dart';
+import 'package:bikex/core/widgets/toast.dart';
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:toastification/toastification.dart';
 
 /// Draggable bottom sheet for product details with tabbed content
 class ProductBottomSheet extends StatefulWidget {
@@ -384,32 +388,15 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
             ),
 
             // Add to Cart button
-            GestureDetector(
+            PrimaryButton(
+              title: 'Add to Cart',
               onTap: () {
-                // TODO: Implement add to cart functionality
+                context.read<CartCubit>().addItem(product);
+                showToast(
+                  message: '${product.name} added to cart',
+                  type: .success,
+                );
               },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 38,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient2,
-                  borderRadius: BorderRadius.circular(12),
-                  border: GradientBoxBorder(
-                    gradient: AppTheme.primaryGradient2,
-                    width: 2,
-                  ),
-                ),
-                child: const Text(
-                  'Add to Cart',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ),
           ],
         ),
