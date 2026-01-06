@@ -86,6 +86,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           borderRadius: .circular(10),
           gradient: AppTheme.primaryGradient,
         ),
+        width: 44,
+        height: 44,
 
         child: Transform.rotate(
           angle: iconRoation! * pi / 180,

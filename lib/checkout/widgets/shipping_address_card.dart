@@ -19,9 +19,10 @@ class ShippingAddressCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
+        width: .infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: AppTheme.secondaryCardGradient,
+          gradient: AppTheme.cartCardGradient,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: AppTheme.borderColor01,

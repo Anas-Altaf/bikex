@@ -97,34 +97,38 @@ class _QuantityControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Increment button
-        _ControlButton(
-          icon: Icons.add,
-          onTap: onIncrement,
-          isIncrement: true,
-        ),
-        // Quantity display
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            '$quantity',
-            style: const TextStyle(
-              color: AppTheme.textColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+    return Container(
+      decoration:AppTheme.boxDecoration01,
+      padding:const .all(4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Increment button
+          _ControlButton(
+            icon: Icons.add,
+            onTap: onIncrement,
+            isIncrement: true,
+          ),
+          // Quantity display
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              '$quantity',
+              style: const TextStyle(
+                color: AppTheme.textColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
-        // Decrement button
-        _ControlButton(
-          icon: Icons.remove,
-          onTap: onDecrement,
-          isIncrement: false,
-        ),
-      ],
+          // Decrement button
+          _ControlButton(
+            icon: Icons.remove,
+            onTap: onDecrement,
+            isIncrement: false,
+          ),
+        ],
+      ),
     );
   }
 }

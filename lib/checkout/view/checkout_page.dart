@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:bikex/cart/cubit/cubit.dart';
 import 'package:bikex/checkout/cubit/cubit.dart';
 import 'package:bikex/checkout/widgets/widgets.dart';
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/widgets/custom_app_bar.dart';
 import 'package:bikex/core/widgets/slide_to_action_button.dart';
 import 'package:bikex/core/widgets/toast.dart';
 import 'package:flutter/material.dart';
@@ -29,43 +32,10 @@ class _CheckoutPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppTheme.transparentColor,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            // Close button
-            GestureDetector(
-              onTap: () => context.pop(),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-            ),
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'Checkout',
-                  style: TextStyle(
-                    color: AppTheme.textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 44), // Balance the layout
-          ],
-        ),
+      appBar: CustomAppBar(
+        title: 'Checkout',
+        iconType: .cross,
+        onTap: () => context.pop(),
       ),
       body: BlocConsumer<CheckoutCubit, CheckoutState>(
         listener: (context, state) {
@@ -81,30 +51,34 @@ class _CheckoutPageContent extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              const SizedBox(height: 20),
+          return Center(
+            child: Column(
+              mainAxisAlignment: .center,
+              crossAxisAlignment: .center,
+              children: [
+                const SizedBox(height: 20),
 
-              // Shipping address card
-              ShippingAddressCard(
-                address: state.selectedAddress,
-                onTap: () => AddressBottomSheet.show(context),
-              ),
-
-              const Spacer(),
-
-              // Slide to proceed button
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: SlideToActionButton(
-                  label: 'Proceed',
-                  disabled: !state.hasSelectedAddress,
-                  onSlideComplete: () {
-                    context.read<CheckoutCubit>().placeOrder();
-                  },
+                // Shipping address card
+                ShippingAddressCard(
+                  address: state.selectedAddress,
+                  onTap: () => AddressBottomSheet.show(context),
                 ),
-              ),
-            ],
+
+                const Spacer(),
+
+                // Slide to proceed button
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: SlideToActionButton(
+                    label: 'Proceed',
+                    disabled: !state.hasSelectedAddress,
+                    onSlideComplete: () {
+                      unawaited(context.read<CheckoutCubit>().placeOrder());
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
