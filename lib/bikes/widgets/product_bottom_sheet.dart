@@ -113,89 +113,128 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                   ),
                 ],
               ),
-              child:
-                  BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
-                    builder: (context, sheetState) {
-                      return CustomScrollView(
-                        controller: scrollController,
-                        slivers: [
-                          // Header with toggle buttons
-                          SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: ProductDetailConstants
-                                      .toggleButtonTopSpacing,
-                                ),
-
-                                // Toggle buttons
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: ProductDetailConstants
-                                        .toggleButtonContainerPadding,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildToggleButton(
-                                          context: context,
-                                          label: 'Description',
-                                          isSelected:
-                                              sheetState.selectedTab ==
-                                              ProductDetailTab.description,
-                                          onTap: () {
-                                            _expandSheet();
-                                            context
-                                                .read<ProductDetailSheetCubit>()
-                                                .selectTab(
-                                                  ProductDetailTab.description,
-                                                );
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: ProductDetailConstants
-                                            .toggleButtonSpacing,
-                                      ),
-                                      Expanded(
-                                        child: _buildToggleButton(
-                                          context: context,
-                                          label: 'Specification',
-                                          isSelected:
-                                              sheetState.selectedTab ==
-                                              ProductDetailTab.specification,
-                                          onTap: () {
-                                            _expandSheet();
-                                            context
-                                                .read<ProductDetailSheetCubit>()
-                                                .selectTab(
-                                                  ProductDetailTab
-                                                      .specification,
-                                                );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: ProductDetailConstants
-                                      .toggleButtonBottomSpacing,
-                                ),
-                              ],
+              child: BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
+                builder: (context, sheetState) {
+                  return Column(
+                    children: [
+                      // Fixed header with toggle buttons (does not scroll)
+                      // Wrapped with GestureDetector to allow dragging the sheet
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onVerticalDragUpdate: (details) {
+                          if (_sheetController.isAttached) {
+                            final screenHeight = MediaQuery.of(
+                              context,
+                            ).size.height;
+                            final delta = -details.delta.dy / screenHeight;
+                            final newSize = (_sheetController.size + delta)
+                                .clamp(
+                                  ProductDetailConstants.sheetMinSize,
+                                  ProductDetailConstants.sheetMaxSize,
+                                );
+                            _sheetController.jumpTo(newSize);
+                          }
+                        },
+                        onVerticalDragEnd: (details) {
+                          if (_sheetController.isAttached) {
+                            // Snap to nearest size
+                            final currentSize = _sheetController.size;
+                            final midPoint =
+                                (ProductDetailConstants.sheetMinSize +
+                                    ProductDetailConstants.sheetMaxSize) /
+                                2;
+                            if (currentSize > midPoint) {
+                              _expandSheet();
+                            } else {
+                              _collapseSheet();
+                            }
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height:
+                                  ProductDetailConstants.toggleButtonTopSpacing,
                             ),
-                          ),
 
-                          // Content area (scrollable)
-                          if (sheetState.selectedTab ==
-                              ProductDetailTab.specification)
-                            _SpecificationTabSliver(product: widget.product)
-                          else
-                            _DescriptionTabSliver(product: widget.product),
-                        ],
-                      );
-                    },
-                  ),
+                            // Toggle buttons
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: ProductDetailConstants
+                                    .toggleButtonContainerPadding,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildToggleButton(
+                                      context: context,
+                                      label: 'Description',
+                                      isSelected:
+                                          sheetState.selectedTab ==
+                                          ProductDetailTab.description,
+                                      onTap: () {
+                                        _expandSheet();
+                                        context
+                                            .read<ProductDetailSheetCubit>()
+                                            .selectTab(
+                                              ProductDetailTab.description,
+                                            );
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: ProductDetailConstants
+                                        .toggleButtonSpacing,
+                                  ),
+                                  Expanded(
+                                    child: _buildToggleButton(
+                                      context: context,
+                                      label: 'Specification',
+                                      isSelected:
+                                          sheetState.selectedTab ==
+                                          ProductDetailTab.specification,
+                                      onTap: () {
+                                        _expandSheet();
+                                        context
+                                            .read<ProductDetailSheetCubit>()
+                                            .selectTab(
+                                              ProductDetailTab.specification,
+                                            );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: ProductDetailConstants
+                                  .toggleButtonBottomSpacing,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Scrollable content area
+                      Expanded(
+                        child: CustomScrollView(
+                          controller: scrollController,
+                          slivers: [
+                            if (sheetState.selectedTab ==
+                                ProductDetailTab.specification)
+                              _SpecificationTabSliver(
+                                product: widget.product,
+                              )
+                            else
+                              _DescriptionTabSliver(
+                                product: widget.product,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           );
         },
