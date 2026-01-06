@@ -34,12 +34,12 @@ class ProductCard extends StatelessWidget {
                 gradient: AppTheme.primaryCardGradient,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: AppTheme.textDescColor.withAlpha(50),
+                  color: AppTheme.textDescColor.withAlpha(30),
                   width: 0.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withAlpha(50),
+                    color: AppTheme.shadowColor.withAlpha(50),
                     blurRadius: 50,
                     offset: const Offset(0, 100),
                   ),

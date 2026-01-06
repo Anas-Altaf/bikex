@@ -19,7 +19,8 @@ abstract class AppRoutes {
   /// Helper to build product detail path
   static String productDetailPath(String productId) => '/product/$productId';
 
-  static const String test = '/test';
+  static const String test =
+      '/test'; // keeping it for later use for testing screens
 }
 
 /// Application router configuration
@@ -49,7 +50,7 @@ class AppRouter {
 
       // Not authenticated - redirect to login
       AuthUnauthenticated() ||
-      AuthError() => isOnAuthPage ? AppRoutes.home : null,
+      AuthError() => isOnAuthPage ? null : AppRoutes.login,
 
       // Authenticated - redirect away from auth pages
       AuthAuthenticated() =>
@@ -85,11 +86,6 @@ class AppRouter {
         final productId = state.pathParameters['productId']!;
         return ProductDetailPage(productId: productId);
       },
-    ),
-    GoRoute(
-      path: AppRoutes.test,
-      name: 'test',
-      builder: (context, state) => TestScreen(),
     ),
   ];
 }
