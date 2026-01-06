@@ -1,6 +1,11 @@
 import 'dart:async';
 
 import 'package:bikex/auth/auth.dart';
+import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/bikes/view/product_detail_page.dart';
+import 'package:bikex/checkout/checkout.dart';
+import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/examples/test.dart';
 import 'package:bikex/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +16,14 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String home = '/home';
+  static const String productDetail = '/product/:productId';
+  static const String checkout = '/checkout';
+
+  /// Helper to build product detail path
+  static String productDetailPath(String productId) => '/product/$productId';
+
+  static const String test =
+      '/test'; // keeping it for later use for testing screens
 }
 
 /// Application router configuration
@@ -34,24 +47,18 @@ class AppRouter {
         state.matchedLocation == AppRoutes.signup;
     final isOnSplash = state.matchedLocation == AppRoutes.splash;
 
-    // Still loading auth state
-    if (authState is AuthUnknown) {
-      return isOnSplash ? null : AppRoutes.splash;
-    }
+    return switch (authState) {
+      // Still loading auth state
+      AuthUnknown() => isOnSplash ? null : AppRoutes.splash,
 
-    // Not authenticated - redirect to login
-    if (authState is AuthUnauthenticated || authState is AuthError) {
-      return isOnAuthPage ? null : AppRoutes.login;
-    }
+      // Not authenticated - redirect to login
+      AuthUnauthenticated() ||
+      AuthError() => isOnAuthPage ? null : AppRoutes.login,
 
-    // Authenticated - redirect away from auth pages
-    if (authState is AuthAuthenticated) {
-      if (isOnAuthPage || isOnSplash) {
-        return AppRoutes.home;
-      }
-    }
-
-    return null;
+      // Authenticated - redirect away from auth pages
+      AuthAuthenticated() =>
+        (isOnAuthPage || isOnSplash) ? AppRoutes.home : null,
+    };
   }
 
   List<RouteBase> get _routes => [
@@ -74,6 +81,33 @@ class AppRouter {
       path: AppRoutes.home,
       name: 'home',
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.productDetail,
+      name: 'productDetail',
+      pageBuilder: (context, state) {
+        final productId = state.pathParameters['productId']!;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ProductDetailPage(productId: productId),
+          barrierColor: AppTheme.backgroundColor,
+          opaque: true,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.checkout,
+      name: 'checkout',
+      builder: (context, state) => const CheckoutPage(),
     ),
   ];
 }

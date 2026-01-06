@@ -27,48 +27,45 @@ class BottomTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NavigationCubit, NavigationState>(
       builder: (context, state) {
-        return SizedBox(
-          height: 130,
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.bottomCenter,
-            children: [
-              // Skewed gradient background
-              Transform(
-                transform: Matrix4.translationValues(0, 20, 0),
-                child: Container(
-                  transform: Matrix4.skewY(-0.06),
-                  height: 110,
-                  transformAlignment: Alignment.bottomCenter,
-                  decoration: BoxDecoration(
-                    gradient: AppTheme.tabBarGradient,
-                  ),
+        return Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
+          children: [
+            // Skewed gradient background
+            Transform(
+              transform: Matrix4.translationValues(0, 50, 0),
+              child: Container(
+                transform: Matrix4.skewY(-0.06),
+                height: 120,
+                transformAlignment: Alignment.bottomCenter,
+                decoration: BoxDecoration(
+                  gradient: AppTheme.tabBarGradient,
                 ),
               ),
+            ),
 
-              // Tab items
-              Positioned(
-                bottom: 25,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(_icons.length, (index) {
-                    final isActive = state.currentIndex == index;
+            // Tab items
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(_icons.length, (index) {
+                  final isActive = state.currentIndex == index;
 
-                    return _TabItem(
-                      icon: _icons[index],
-                      label: _labels[index],
-                      isActive: isActive,
-                      onTap: () {
-                        context.read<NavigationCubit>().changeTab(index);
-                      },
-                    );
-                  }),
-                ),
+                  return _TabItem(
+                    icon: _icons[index],
+                    label: _labels[index],
+                    isActive: isActive,
+                    onTap: () {
+                      context.read<NavigationCubit>().changeTab(index);
+                    },
+                  );
+                }),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -104,20 +101,11 @@ class _TabItem extends StatelessWidget {
             0,
           ),
           width: isActive ? 65 : 48,
-          height: isActive ? 55 : 48,
+          height: isActive ? 50 : 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             gradient: isActive ? AppTheme.primaryGradient : null,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: isActive
-                ? [
-                    const BoxShadow(
-                      color: AppTheme.shadowColor,
-                      blurRadius: 30,
-                      offset: Offset(0, 20),
-                    ),
-                  ]
-                : null,
           ),
           child: Transform(
             transform: Matrix4.skewY(0.15),
@@ -126,22 +114,11 @@ class _TabItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  size: 28,
+                  size: isActive ? 28 : 24,
                   color: isActive
                       ? AppTheme.textColor
                       : AppTheme.textColor.withAlpha(150),
                 ),
-                // if (isActive) ...[
-                //   const SizedBox(height: 2),
-                //   Text(
-                //     label,
-                //     style: const TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 8,
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                // ],
               ],
             ),
           ),

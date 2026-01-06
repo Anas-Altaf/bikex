@@ -1,9 +1,13 @@
 import 'package:bikex/auth/auth.dart';
+import 'package:bikex/bikes/bikes.dart';
+import 'package:bikex/cart/cart.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/l10n/l10n.dart';
 import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -15,10 +19,32 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: authRepo,
-      child: BlocProvider(
-        create: (_) => AuthCubit(authRepo: authRepo),
+    // Create repositories at app level (concrete implementations)
+    final ProductsRepo productsRepo = MockProductsRepo();
+    final FavoritesRepo favoritesRepo = InMemoryFavoritesRepo();
+    final CartRepo cartRepo = MockCartRepo();
+
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: authRepo),
+        RepositoryProvider<ProductsRepo>.value(value: productsRepo),
+        RepositoryProvider<FavoritesRepo>.value(value: favoritesRepo),
+        RepositoryProvider<CartRepo>.value(value: cartRepo),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => AuthCubit(authRepo: authRepo)),
+          BlocProvider(
+            create: (_) =>
+                ProductsCubit(productsRepo: productsRepo)..loadProducts(),
+          ),
+          BlocProvider(
+            create: (_) => FavoritesCubit(favoritesRepo: favoritesRepo),
+          ),
+          BlocProvider(
+            create: (_) => CartCubit(cartRepo: cartRepo),
+          ),
+        ],
         child: const AppView(),
       ),
     );
@@ -43,16 +69,24 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.backgroundColor),
-        fontFamily: 'Poppins',
-        useMaterial3: true,
+    return ToastificationWrapper(
+      config: const ToastificationConfig(
+        alignment: Alignment.topCenter,
+        maxDescriptionLines: 0,
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _appRouter.router,
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppTheme.backgroundColor,
+          ),
+          textTheme: GoogleFonts.poppinsTextTheme(),
+          useMaterial3: true,
+        ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: _appRouter.router,
+      ),
     );
   }
 }
