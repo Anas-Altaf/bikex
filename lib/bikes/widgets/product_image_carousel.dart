@@ -38,21 +38,46 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
           child: CarouselSlider.builder(
             itemCount: images.length,
             itemBuilder: (context, index, realIndex) {
-              return Hero(
-                tag: 'product_image_${widget.product.id}',
-                child: Image.asset(
-                  images[index],
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                ),
+              final image = Image.asset(
+                images[index],
+                fit: BoxFit.contain,
+                width: double.infinity,
               );
+
+              // Only apply Hero to first image to avoid duplicate tag issues
+              if (index == 0) {
+                return Hero(
+                  tag: 'product_image_${widget.product.id}',
+                  flightShuttleBuilder:
+                      (
+                        flightContext,
+                        animation,
+                        flightDirection,
+                        fromHeroContext,
+                        toHeroContext,
+                      ) {
+                        return AnimatedBuilder(
+                          animation: animation,
+                          builder: (context, child) {
+                            return Image.asset(
+                              images[0],
+                              fit: BoxFit.contain,
+                            );
+                          },
+                        );
+                      },
+                  child: image,
+                );
+              }
+              return image;
             },
             options: CarouselOptions(
               height: widget.imageHeight,
               viewportFraction: 1,
               enableInfiniteScroll: images.length > 1,
               autoPlay: true,
-              autoPlayAnimationDuration: ProductDetailConstants.carouselDuration,
+              autoPlayAnimationDuration:
+                  ProductDetailConstants.carouselDuration,
               onPageChanged: (index, reason) {
                 setState(() {
                   _currentIndex = index;

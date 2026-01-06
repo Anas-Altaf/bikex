@@ -4,6 +4,7 @@ import 'package:bikex/auth/auth.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/view/product_detail_page.dart';
 import 'package:bikex/checkout/checkout.dart';
+import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/examples/test.dart';
 import 'package:bikex/home/home.dart';
 import 'package:flutter/material.dart';
@@ -84,9 +85,23 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.productDetail,
       name: 'productDetail',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final productId = state.pathParameters['productId']!;
-        return ProductDetailPage(productId: productId);
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: ProductDetailPage(productId: productId),
+          barrierColor: AppTheme.backgroundColor,
+          opaque: true,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
+              child: child,
+            );
+          },
+        );
       },
     ),
     GoRoute(
