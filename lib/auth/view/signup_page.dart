@@ -1,4 +1,6 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/auth/auth.dart';
+import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,10 +41,10 @@ class _SignupPageState extends State<SignupPage> {
 
     try {
       await context.read<AuthCubit>().signUp(
-            _emailController.text.trim(),
-            _passwordController.text,
-            _nameController.text.trim(),
-          );
+        _emailController.text.trim(),
+        _passwordController.text,
+        _nameController.text.trim(),
+      );
     } on Exception catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -56,11 +58,30 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  InputDecoration _buildInputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: AppTheme.textDescColor),
+      filled: true,
+      fillColor: AppTheme.backgroundSurfaceColor,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      prefixIcon: Icon(icon, color: AppTheme.textDescColor),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('Create Account'),
+        backgroundColor: AppTheme.transparentColor,
+        title: const Text(
+          'Create Account',
+          style: TextStyle(color: AppTheme.textColor),
+        ),
       ),
       body: SafeArea(
         child: Center(
@@ -72,112 +93,161 @@ class _SignupPageState extends State<SignupPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
-                    Icons.pedal_bike,
-                    size: 80,
-                    color: Colors.blue,
+                  // Logo
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 500),
+                    child: const Icon(
+                      Icons.pedal_bike,
+                      size: 80,
+                      color: AppTheme.primaryUpColor,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Join BikeX',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
+                  // Title
+                  FadeInDown(
+                    delay: const Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 500),
+                    child: Text(
+                      'Join BikeX',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: AppTheme.textColor,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person),
+                  // Name field
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 150),
+                    duration: const Duration(milliseconds: 400),
+                    child: TextFormField(
+                      controller: _nameController,
+                      style: const TextStyle(color: AppTheme.textColor),
+                      decoration: _buildInputDecoration(
+                        'Full Name',
+                        Icons.person,
+                      ),
+                      textCapitalization: TextCapitalization.words,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
                     ),
-                    textCapitalization: TextCapitalization.words,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
+                  // Email field
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 250),
+                    duration: const Duration(milliseconds: 400),
+                    child: TextFormField(
+                      controller: _emailController,
+                      style: const TextStyle(color: AppTheme.textColor),
+                      decoration: _buildInputDecoration('Email', Icons.email),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
+                  // Password field
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 350),
+                    duration: const Duration(milliseconds: 400),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      style: const TextStyle(color: AppTheme.textColor),
+                      decoration: _buildInputDecoration('Password', Icons.lock),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock_outline),
+                  // Confirm password field
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 450),
+                    duration: const Duration(milliseconds: 400),
+                    child: TextFormField(
+                      controller: _confirmPasswordController,
+                      style: const TextStyle(color: AppTheme.textColor),
+                      decoration: _buildInputDecoration(
+                        'Confirm Password',
+                        Icons.lock_outline,
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
                   ),
                   if (_errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    Text(
-                      _errorMessage!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
+                    FadeIn(
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.redAccent),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                   const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: _isLoading ? null : _handleSignup,
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Create Account'),
+                  // Create account button
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 550),
+                    duration: const Duration(milliseconds: 400),
+                    child: FilledButton(
+                      onPressed: _isLoading ? null : _handleSignup,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.primaryUpColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Create Account'),
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () => context.go(AppRoutes.login),
-                    child: const Text('Already have an account? Sign in'),
+                  // Sign in link
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 650),
+                    duration: const Duration(milliseconds: 400),
+                    child: TextButton(
+                      onPressed: () => context.go(AppRoutes.login),
+                      child: const Text(
+                        'Already have an account? Sign in',
+                        style: TextStyle(color: AppTheme.primaryUpColor),
+                      ),
+                    ),
                   ),
                 ],
               ),

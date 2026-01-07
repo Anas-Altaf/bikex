@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/cubit/product_detail_sheet_cubit.dart';
 import 'package:bikex/bikes/widgets/diagonal_painter.dart';
@@ -69,7 +70,7 @@ class _ProductDetailContent extends StatelessWidget {
     return BlocBuilder<ProductDetailSheetCubit, ProductDetailSheetState>(
       builder: (context, sheetState) {
         final sheetSize = sheetState.sheetSize;
-        
+
         // Calculate icon rotation using helper method
         final iconRotation = ProductDetailConstants.calculateIconRotation(
           sheetSize,
@@ -88,25 +89,30 @@ class _ProductDetailContent extends StatelessWidget {
                   child: Column(
                     children: [
                       // App bar using CustomAppBar
-                      CustomAppBar(
-                        title: product.name.toUpperCase(),
-                        onTap: () => iconRotation ==
-                                ProductDetailConstants.minRotationAngle
-                            ? context.pop()
-                            : context
-                                .read<ProductDetailSheetCubit>()
-                                .collapseSheet(),
-                        iconRoation: iconRotation,
+                      FadeInDown(
+                        duration: const Duration(milliseconds: 400),
+                        child: CustomAppBar(
+                          title: product.name.toUpperCase(),
+                          onTap: () =>
+                              iconRotation ==
+                                  ProductDetailConstants.minRotationAngle
+                              ? context.pop()
+                              : context
+                                    .read<ProductDetailSheetCubit>()
+                                    .collapseSheet(),
+                          iconRoation: iconRotation,
+                        ),
                       ),
 
                       // Hero product images carousel - dynamically sized
                       ProductImageCarousel(
                         product: product,
-                        imageHeight: ProductDetailConstants.calculateImageHeight(
-                          screenHeight: screenHeight,
-                          statusBarHeight: statusBarHeight,
-                          sheetSize: sheetSize,
-                        ),
+                        imageHeight:
+                            ProductDetailConstants.calculateImageHeight(
+                              screenHeight: screenHeight,
+                              statusBarHeight: statusBarHeight,
+                              sheetSize: sheetSize,
+                            ),
                       ),
 
                       // Spacer to push everything up
@@ -115,14 +121,18 @@ class _ProductDetailContent extends StatelessWidget {
                   ),
                 ),
 
-                // Draggable bottom sheet
-                ProductBottomSheet(
-                  product: product,
-                  onSizeChanged: (size) {
-                    context.read<ProductDetailSheetCubit>().updateSheetSize(
-                      size,
-                    );
-                  },
+                // Draggable bottom sheet with animation
+                FadeInUp(
+                  delay: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 500),
+                  child: ProductBottomSheet(
+                    product: product,
+                    onSizeChanged: (size) {
+                      context.read<ProductDetailSheetCubit>().updateSheetSize(
+                        size,
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

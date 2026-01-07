@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -40,17 +41,24 @@ class ProductsList extends StatelessWidget {
                           product.id,
                         );
 
-                        return Transform.translate(
-                          offset: Offset(0, isLeft ? 25 : 0),
-                          child: ProductCard(
-                            product: product,
-                            isFavorite: isFavorite,
-                            onTap: () => context.push(
-                              AppRoutes.productDetailPath(product.id),
+                        // Staggered animation delay based on index
+                        final delay = Duration(milliseconds: 50 * index);
+
+                        return FadeInUp(
+                          delay: delay,
+                          duration: const Duration(milliseconds: 400),
+                          child: Transform.translate(
+                            offset: Offset(0, isLeft ? 25 : 0),
+                            child: ProductCard(
+                              product: product,
+                              isFavorite: isFavorite,
+                              onTap: () => context.push(
+                                AppRoutes.productDetailPath(product.id),
+                              ),
+                              onFavoriteToggle: () => context
+                                  .read<FavoritesCubit>()
+                                  .toggleFavorite(product.id),
                             ),
-                            onFavoriteToggle: () => context
-                                .read<FavoritesCubit>()
-                                .toggleFavorite(product.id),
                           ),
                         );
                       },

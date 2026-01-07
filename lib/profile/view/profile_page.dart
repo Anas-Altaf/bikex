@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/auth/auth.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -19,40 +20,84 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircleAvatar(
-                radius: 40,
-                backgroundColor: AppTheme.primaryUpColor,
-                child: Icon(
-                  Icons.person,
-                  size: 48,
-                  color: Colors.white,
+              // Avatar with zoom animation
+              ZoomIn(
+                duration: const Duration(milliseconds: 500),
+                child: const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: AppTheme.primaryUpColor,
+                  child: Icon(
+                    Icons.person,
+                    size: 56,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                user?.name ?? 'Guest',
-                style: const TextStyle(
-                  color: AppTheme.textColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              // Name with fade animation
+              FadeInUp(
+                delay: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 400),
+                child: Text(
+                  user?.name ?? 'Guest',
+                  style: const TextStyle(
+                    color: AppTheme.textColor,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                user?.email ?? '',
-                style: const TextStyle(
-                  color: AppTheme.textDescColor,
-                  fontSize: 14,
+              // Email with fade animation
+              FadeInUp(
+                delay: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 400),
+                child: Text(
+                  user?.email ?? '',
+                  style: const TextStyle(
+                    color: AppTheme.textDescColor,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-              const SizedBox(height: 32),
-              OutlinedButton.icon(
-                onPressed: () => context.read<AuthCubit>().signOut(),
-                icon: const Icon(Icons.logout),
-                label: const Text('Sign Out'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.primaryUpColor,
-                  side: const BorderSide(color: AppTheme.primaryUpColor),
+              const SizedBox(height: 40),
+              // Sign out button with fade animation
+              FadeInUp(
+                delay: const Duration(milliseconds: 400),
+                duration: const Duration(milliseconds: 400),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.primaryGradient,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => context.read<AuthCubit>().signOut(),
+                      borderRadius: BorderRadius.circular(12),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 14,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.logout, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              'Sign Out',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

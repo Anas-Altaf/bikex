@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/checkout/models/models.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -80,12 +81,28 @@ class ShippingAddressCard extends StatelessWidget {
               ),
             ] else ...[
               const SizedBox(height: 40),
-              const Center(
-                child: Text(
-                  'Tap to add address',
-                  style: TextStyle(
-                    color: AppTheme.textDescColor,
-                    fontSize: 14,
+              Center(
+                child: Pulse(
+                  infinite: true,
+                  duration: const Duration(seconds: 2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.add_location_alt_outlined,
+                        color: AppTheme.primaryUpColor,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Tap to add address',
+                        style: TextStyle(
+                          color: AppTheme.primaryUpColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

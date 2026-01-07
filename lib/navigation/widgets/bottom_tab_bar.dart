@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/navigation/navigation.dart';
 import 'package:flutter/material.dart';
@@ -27,45 +28,52 @@ class BottomTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NavigationCubit, NavigationState>(
       builder: (context, state) {
-        return Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
-          children: [
-            // Skewed gradient background
-            Transform(
-              transform: Matrix4.translationValues(0, 50, 0),
-              child: Container(
-                transform: Matrix4.skewY(-0.06),
-                height: 120,
-                transformAlignment: Alignment.bottomCenter,
-                decoration: BoxDecoration(
-                  gradient: AppTheme.tabBarGradient,
+        return FadeInUp(
+          duration: const Duration(milliseconds: 500),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.bottomCenter,
+            children: [
+              // Skewed gradient background
+              Transform(
+                transform: Matrix4.translationValues(0, 50, 0),
+                child: Container(
+                  transform: Matrix4.skewY(-0.06),
+                  height: 120,
+                  transformAlignment: Alignment.bottomCenter,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.tabBarGradient,
+                  ),
                 ),
               ),
-            ),
 
-            // Tab items
-            Positioned(
-              bottom: 10,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(_icons.length, (index) {
-                  final isActive = state.currentIndex == index;
+              // Tab items with staggered animation
+              Positioned(
+                bottom: 10,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: List.generate(_icons.length, (index) {
+                    final isActive = state.currentIndex == index;
 
-                  return _TabItem(
-                    icon: _icons[index],
-                    label: _labels[index],
-                    isActive: isActive,
-                    onTap: () {
-                      context.read<NavigationCubit>().changeTab(index);
-                    },
-                  );
-                }),
+                    return FadeInUp(
+                      delay: Duration(milliseconds: 100 + (index * 50)),
+                      duration: const Duration(milliseconds: 400),
+                      child: _TabItem(
+                        icon: _icons[index],
+                        label: _labels[index],
+                        isActive: isActive,
+                        onTap: () {
+                          context.read<NavigationCubit>().changeTab(index);
+                        },
+                      ),
+                    );
+                  }),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
