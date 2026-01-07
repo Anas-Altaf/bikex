@@ -52,7 +52,8 @@
 ## 📱 Screenshots
 
 <p align="center">
-  <em>Screenshots coming soon...</em>
+  <img width="720" height="1520" alt="bikex" src="https://github.com/user-attachments/assets/dcf6cf91-15f1-4e57-9dc6-5cac36d5e3bc" />
+
 </p>
 
 ---
