@@ -1,241 +1,169 @@
-# BikeX - Flutter Starter Template
+<p align="center">
+  <img src="assets/images/logo.png" alt="BikeX Logo" width="120"/>
+</p>
 
-A production-ready Flutter starter template with **Firebase Authentication**, **go_router** navigation, and **multi-flavor** support.
+<h1 align="center">🚴 BikeX</h1>
 
-## Features
+<p align="center">
+  <strong>Premium E-Commerce Mobile App for Bikes</strong>
+</p>
 
-- ✅ **Firebase Auth** - Email/Password authentication with streams
-- ✅ **go_router** - Declarative routing with auth guards
-- ✅ **BLoC Pattern** - State management with flutter_bloc
-- ✅ **Multi-Flavor** - Development, Staging, Production builds
-- ✅ **Cross-Platform** - Android, iOS, Web, Windows, macOS
-- ✅ **Localization** - Ready for internationalization
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#getting-started">Getting Started</a>
+</p>
 
----
-
-## Quick Start
-
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd bikex
-
-# Install dependencies
-flutter pub get
-
-# Run development build
-flutter run --flavor development --target lib/main_development.dart
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter" alt="Flutter"/>
+  <img src="https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart" alt="Dart"/>
+  <img src="https://img.shields.io/badge/BLoC-Pattern-blueviolet" alt="BLoC"/>
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License"/>
+</p>
 
 ---
 
-## Using This Template for Your Project
-
-### Step 1: Rename the Project
-
-1. **Update `pubspec.yaml`:**
-   ```yaml
-   name: your_app_name
-   description: Your app description
-   ```
-
-2. **Rename package imports** (find and replace across all files):
-   ```
-   package:bikex → package:your_app_name
-   ```
-
-3. **Update Android package name** in:
-   - `android/app/build.gradle` → `applicationId`
-   - `android/app/src/*/AndroidManifest.xml`
-
-4. **Update iOS bundle identifier** in:
-   - `ios/Runner.xcodeproj/project.pbxproj`
-   - Or use Xcode to change Bundle Identifier
+<p align="center">
+  <!-- VIDEO DEMO PLACEHOLDER -->
+  <br/>
+  
+  <br/><br/>
+</p>
 
 ---
 
-### Step 2: Set Up Your Own Firebase Project
+## ✨ Features
 
-#### 2.1 Create Firebase Project
-
-```bash
-# Install Firebase CLI (if not installed)
-npm install -g firebase-tools
-
-# Login to Firebase
-firebase login
-
-# Create new project
-firebase projects:create your-project-id --display-name="Your App Name"
-```
-
-#### 2.2 Enable Authentication
-
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Select your project
-3. Navigate to **Authentication** → **Sign-in method**
-4. Enable **Email/Password**
-
-#### 2.3 Configure FlutterFire
-
-```bash
-# Activate FlutterFire CLI
-dart pub global activate flutterfire_cli
-
-# Configure (replace with your project ID and package names)
-dart pub global run flutterfire_cli:flutterfire configure \
-  --project=your-project-id \
-  --platforms=android,ios,web,windows,macos \
-  --android-package-name=com.yourcompany.yourapp
-```
-
-This generates:
-- `lib/firebase_options.dart`
-- `android/app/google-services.json`
-- `ios/Runner/GoogleService-Info.plist`
-
-#### 2.4 Add Flavor-Specific Apps (Android)
-
-If using flavors, register each package name:
-
-```bash
-# Development flavor
-firebase apps:create ANDROID \
-  --package-name=com.yourcompany.yourapp.dev \
-  --project=your-project-id
-
-# Staging flavor
-firebase apps:create ANDROID \
-  --package-name=com.yourcompany.yourapp.stg \
-  --project=your-project-id
-
-# Re-run FlutterFire to update google-services.json
-dart pub global run flutterfire_cli:flutterfire configure \
-  --project=your-project-id \
-  --platforms=android,ios,web,windows,macos
-```
+| Feature                  | Description                                  |
+| ------------------------ | -------------------------------------------- |
+| 🏠 **Product Catalog**   | Browse 32+ premium bikes across 4 categories |
+| 🔍 **Animated Search**   | Full-screen search with real-time filtering  |
+| ❤️ **Favorites**         | Save your favorite bikes for later           |
+| 🛒 **Shopping Cart**     | Add items, adjust quantities, checkout       |
+| 📦 **Order Tracking**    | View order history with status badges        |
+| 🎨 **Glassmorphism UI**  | Modern frosted glass effects with gradients  |
+| ⚡ **Smooth Animations** | Staggered animations, transitions & gestures |
+| 🌙 **Dark Theme**        | Elegant dark mode design                     |
 
 ---
 
-### Step 3: Update Android Flavors
+## 📱 Screenshots
 
-Edit `android/app/build.gradle`:
-
-```groovy
-flavorDimensions "default"
-productFlavors {
-    development {
-        dimension "default"
-        applicationIdSuffix ".dev"
-        versionNameSuffix "-dev"
-    }
-    staging {
-        dimension "default"
-        applicationIdSuffix ".stg"
-        versionNameSuffix "-stg"
-    }
-    production {
-        dimension "default"
-        // No suffix for production
-    }
-}
-```
+<p align="center">
+  <em>Screenshots coming soon...</em>
+</p>
 
 ---
 
-## Project Structure
+## 🛠 Tech Stack
+
+### Core
+
+- **Flutter 3.x** - Cross-platform UI framework
+- **Dart 3.x** - Programming language with null safety
+
+### State Management
+
+- **flutter_bloc** - Predictable state management with Cubit pattern
+- **equatable** - Value equality for state classes
+
+### Navigation
+
+- **go_router** - Declarative routing with deep linking support
+
+### UI/UX
+
+- **animate_do** - Pre-built animations
+- **flutter_svg** - SVG rendering
+- **google_fonts** - Custom typography (Poppins)
+- **flutter_inset_shadow** - Advanced shadow effects
+- **toastification** - Beautiful toast notifications
+
+### Development
+
+- **very_good_cli** - Project scaffolding & best practices
+- **flutter_lints** - Strict linting rules
+
+---
+
+## 🏗 Architecture
 
 ```
 lib/
-├── app/                    # App entry point
-│   └── view/
-│       └── app.dart        # MaterialApp.router setup
-├── auth/                   # Authentication feature
-│   ├── cubit/              # Auth state management
-│   ├── models/             # User model
-│   ├── repo/               # Firebase Auth repository
-│   ├── view/               # Login & Signup pages
-│   └── auth.dart           # Barrel export
-├── home/                   # Home feature
-│   ├── view/
-│   │   └── home_page.dart
-│   └── home.dart
-├── routes/                 # Routing configuration
-│   ├── app_router.dart     # GoRouter setup
-│   └── routes.dart
-├── l10n/                   # Localization
-├── firebase_options.dart   # Auto-generated Firebase config
-├── bootstrap.dart          # App initialization
-└── main_*.dart             # Flavor entry points
+├── app/                    # App entry point & configuration
+├── bikes/                  # Products feature module
+│   ├── cubit/              # Product & favorites state
+│   ├── models/             # Product model
+│   ├── repo/               # Repository abstraction
+│   ├── view/               # Pages (catalog, detail)
+│   └── widgets/            # Product cards, hero, search
+├── cart/                   # Shopping cart feature
+│   ├── cubit/              # Cart state management
+│   ├── models/             # Cart item model
+│   └── widgets/            # Cart cards, summary
+├── checkout/               # Checkout flow
+│   ├── cubit/              # Checkout state
+│   ├── models/             # Address model
+│   └── widgets/            # Address card, slider
+├── orders/                 # Order history
+│   ├── cubit/              # Orders state
+│   ├── models/             # Order model
+│   └── widgets/            # Order cards
+├── core/                   # Shared utilities
+│   ├── theme/              # Colors, gradients, blur
+│   ├── widgets/            # Reusable components
+│   └── constants.dart      # Magic numbers
+├── navigation/             # Bottom tab navigation
+├── routes/                 # GoRouter configuration
+└── l10n/                   # Localization
 ```
+
+### Design Principles
+
+- **BLoC Pattern** - Separation of UI and business logic
+- **Repository Pattern** - Abstracted data sources
+- **Feature-first** - Modular, scalable folder structure
+- **Immutable State** - Predictable state updates with Equatable
 
 ---
 
-## Adding New Features
+## 🚀 Getting Started
 
-Follow the pattern:
+### Prerequisites
 
-```
-lib/your_feature/
-├── cubit/                  # State management (optional)
-│   ├── feature_cubit.dart
-│   └── feature_state.dart
-├── models/                 # Data models (optional)
-├── repo/                   # Repository (optional)
-├── view/
-│   └── feature_page.dart   # UI
-└── your_feature.dart       # Barrel export
-```
+- Flutter SDK `>=3.0.0`
+- Dart SDK `>=3.0.0`
+- Android Studio / VS Code
+- Android Emulator or iOS Simulator
 
----
+### Installation
 
-## Adding New Routes
+1. **Clone the repository**
 
-1. Add route path in `lib/routes/app_router.dart`:
-   ```dart
-   abstract class AppRoutes {
-     // ... existing routes
-     static const String newFeature = '/new-feature';
-   }
+   ```bash
+   git clone https://github.com/Anas-Altaf/bikex.git
+   cd bikex
    ```
 
-2. Add `GoRoute` in `_routes` getter:
-   ```dart
-   GoRoute(
-     path: AppRoutes.newFeature,
-     name: 'newFeature',
-     builder: (context, state) => const NewFeaturePage(),
-   ),
+2. **Install dependencies**
+
+   ```bash
+   flutter pub get
    ```
 
-3. Navigate using:
-   ```dart
-   context.go(AppRoutes.newFeature);
-   // or
-   context.push(AppRoutes.newFeature);
+3. **Run the app**
+
+   ```bash
+   # Development
+   flutter run --flavor development --target lib/main_development.dart
+
+   # Production
+   flutter run --flavor production --target lib/main_production.dart
    ```
 
----
-
-## Running the App
-
-```bash
-# Development
-flutter run --flavor development --target lib/main_development.dart
-
-# Staging
-flutter run --flavor staging --target lib/main_staging.dart
-
-# Production
-flutter run --flavor production --target lib/main_production.dart
-
-# Web (no flavors needed)
-flutter run -d chrome --target lib/main_development.dart
-```
-
----
-
-## Building for Release
+### Build
 
 ```bash
 # Android APK
@@ -246,41 +174,39 @@ flutter build appbundle --flavor production --target lib/main_production.dart
 
 # iOS
 flutter build ios --flavor production --target lib/main_production.dart
-
-# Web
-flutter build web --target lib/main_production.dart
 ```
 
 ---
 
-## Troubleshooting
+## 📂 Product Categories
 
-### "No matching client found for package name"
-Run FlutterFire configure again to update `google-services.json`:
-```bash
-dart pub global run flutterfire_cli:flutterfire configure --project=your-project-id
-```
-
-### Firebase Auth not working
-Ensure Email/Password is enabled in Firebase Console → Authentication → Sign-in method.
-
-### Package name conflicts
-Make sure all flavor package names are registered in Firebase and `google-services.json` contains all of them.
+| Category    | Products | Price Range   |
+| ----------- | -------- | ------------- |
+| ⚡ Electric | 8 bikes  | $999 - $3,299 |
+| 🏎 Road      | 8 bikes  | $899 - $2,199 |
+| ⛰ Mountain  | 8 bikes  | $799 - $1,899 |
+| 🏙 Urban     | 8 bikes  | $349 - $899   |
 
 ---
 
-## Dependencies
+## 🤝 Contributing
 
-| Package | Purpose |
-|---------|---------|
-| `flutter_bloc` | State management |
-| `go_router` | Navigation |
-| `firebase_core` | Firebase initialization |
-| `firebase_auth` | Authentication |
-| `equatable` | Value equality |
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
-## License
+## 📄 License
 
-MIT License - Feel free to use this template for your projects.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/Anas-Altaf">Anas Altaf</a>
+</p>
