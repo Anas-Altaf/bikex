@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/cart/cubit/cubit.dart';
 import 'package:bikex/cart/widgets/widgets.dart';
 import 'package:bikex/core/theme/app_theme.dart';
@@ -39,68 +40,76 @@ class _CartPageState extends State<CartPage> {
 
                 itemBuilder: (context, index) {
                   final item = state.items[index];
-                  return CartItemCard(
-                    cartItem: item,
-                    onIncrement: () {
-                      context.read<CartCubit>().incrementQuantity(
-                        item.product.id,
-                      );
-                    },
-                    onDecrement: () {
-                      context.read<CartCubit>().decrementQuantity(
-                        item.product.id,
-                      );
-                    },
+                  return FadeInRight(
+                    delay: Duration(milliseconds: 50 * index),
+                    duration: const Duration(milliseconds: 300),
+                    child: CartItemCard(
+                      cartItem: item,
+                      onIncrement: () {
+                        context.read<CartCubit>().incrementQuantity(
+                          item.product.id,
+                        );
+                      },
+                      onDecrement: () {
+                        context.read<CartCubit>().decrementQuantity(
+                          item.product.id,
+                        );
+                      },
+                    ),
                   );
                 },
               ),
             ),
 
             // Bottom section with coupon and summary
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(32),
+            FadeInUp(
+              delay: const Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 400),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Coupon input
-                  CouponInputField(
-                    onApply: (code) {
-                      context.read<CartCubit>().applyCoupon(code);
-                    },
-                    appliedCouponCode: state.appliedCoupon?.code,
-                    errorMessage: state.couponError,
-                  ),
-                  const SizedBox(height: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Coupon input
+                    CouponInputField(
+                      onApply: (code) {
+                        context.read<CartCubit>().applyCoupon(code);
+                      },
+                      appliedCouponCode: state.appliedCoupon?.code,
+                      errorMessage: state.couponError,
+                    ),
+                    const SizedBox(height: 20),
 
-                  // Order summary
-                  OrderSummaryCard(
-                    subtotal: state.subtotal,
-                    deliveryFee: state.deliveryFee,
-                    discount: state.discount,
-                    discountPercent: state.discountPercent,
-                    total: state.total,
-                    hasFreeShipping: state.hasFreeShipping,
-                  ),
-                  const SizedBox(height: 24),
+                    // Order summary
+                    OrderSummaryCard(
+                      subtotal: state.subtotal,
+                      deliveryFee: state.deliveryFee,
+                      discount: state.discount,
+                      discountPercent: state.discountPercent,
+                      total: state.total,
+                      hasFreeShipping: state.hasFreeShipping,
+                    ),
+                    const SizedBox(height: 24),
 
-                  // Slide to checkout button
-                  SlideToActionButton(
-                    key: _sliderKey,
-                    label: 'Checkout',
-                    onSlideComplete: () {
-                      context.push('/checkout').then((_) {
-                        // Reset slider when returning from checkout
-                        _sliderKey.currentState?.reset();
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                ],
+                    // Slide to checkout button
+                    SlideToActionButton(
+                      key: _sliderKey,
+                      label: 'Checkout',
+                      onSlideComplete: () {
+                        context.push('/checkout').then((_) {
+                          // Reset slider when returning from checkout
+                          _sliderKey.currentState?.reset();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
               ),
             ),
           ],
@@ -117,39 +126,45 @@ class _EmptyCartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppTheme.backgroundSurfaceColor,
-              shape: BoxShape.circle,
+      child: FadeIn(
+        duration: const Duration(milliseconds: 500),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BounceInDown(
+              duration: const Duration(milliseconds: 600),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  color: AppTheme.backgroundSurfaceColor,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 64,
+                  color: AppTheme.textDescColor,
+                ),
+              ),
             ),
-            child: const Icon(
-              Icons.shopping_cart_outlined,
-              size: 64,
-              color: AppTheme.textDescColor,
+            const SizedBox(height: 24),
+            const Text(
+              'Your cart is empty',
+              style: TextStyle(
+                color: AppTheme.textColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Your cart is empty',
-            style: TextStyle(
-              color: AppTheme.textColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const SizedBox(height: 8),
+            const Text(
+              'Add some products to get started',
+              style: TextStyle(
+                color: AppTheme.textDescColor,
+                fontSize: 14,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Add some products to get started',
-            style: TextStyle(
-              color: AppTheme.textDescColor,
-              fontSize: 14,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

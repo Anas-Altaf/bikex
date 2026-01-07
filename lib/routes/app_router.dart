@@ -5,8 +5,8 @@ import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/bikes/view/product_detail_page.dart';
 import 'package:bikex/checkout/checkout.dart';
 import 'package:bikex/core/theme/app_theme.dart';
-import 'package:bikex/examples/test.dart';
 import 'package:bikex/home/home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,6 +24,44 @@ abstract class AppRoutes {
 
   static const String test =
       '/test'; // keeping it for later use for testing screens
+}
+
+/// iOS-style slide transition page
+CustomTransitionPage<T> _buildSlideTransition<T>({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    child: child,
+    barrierColor: AppTheme.backgroundColor,
+    transitionDuration: const Duration(milliseconds: 350),
+    reverseTransitionDuration: const Duration(milliseconds: 300),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // iOS-style slide from right
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      final tween = Tween(begin: begin, end: end).chain(
+        CurveTween(curve: Curves.easeInOutCubic),
+      );
+      final offsetAnimation = animation.drive(tween);
+
+      // Slight scale and fade on the outgoing page
+      final secondaryTween = Tween(
+        begin: Offset.zero,
+        end: const Offset(-0.25, 0.0),
+      ).chain(CurveTween(curve: Curves.easeInOutCubic));
+      final secondaryOffset = secondaryAnimation.drive(secondaryTween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: SlideTransition(
+          position: secondaryOffset,
+          child: child,
+        ),
+      );
+    },
+  );
 }
 
 /// Application router configuration
@@ -70,44 +108,50 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.login,
       name: 'login',
-      builder: (context, state) => const LoginPage(),
+      pageBuilder: (context, state) => _buildSlideTransition(
+        key: state.pageKey,
+        child: const LoginPage(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.signup,
       name: 'signup',
-      builder: (context, state) => const SignupPage(),
+      pageBuilder: (context, state) => _buildSlideTransition(
+        key: state.pageKey,
+        child: const SignupPage(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.home,
       name: 'home',
-      builder: (context, state) => const HomePage(),
+      pageBuilder: (context, state) {
+        // Get initial tab from query parameter (defaults to 0 - Bikes)
+        final tabStr = state.uri.queryParameters['tab'];
+        final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+        return _buildSlideTransition(
+          key: state.pageKey,
+          child: HomePage(initialTab: initialTab),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.productDetail,
       name: 'productDetail',
       pageBuilder: (context, state) {
         final productId = state.pathParameters['productId']!;
-        return CustomTransitionPage(
+        return _buildSlideTransition(
           key: state.pageKey,
           child: ProductDetailPage(productId: productId),
-          barrierColor: AppTheme.backgroundColor,
-          opaque: true,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOut,
-              ),
-              child: child,
-            );
-          },
         );
       },
     ),
     GoRoute(
       path: AppRoutes.checkout,
       name: 'checkout',
-      builder: (context, state) => const CheckoutPage(),
+      pageBuilder: (context, state) => _buildSlideTransition(
+        key: state.pageKey,
+        child: const CheckoutPage(),
+      ),
     ),
   ];
 }
@@ -133,14 +177,22 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
+    return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
+            CupertinoActivityIndicator(radius: 16),
             SizedBox(height: 16),
-            Text('BikeX'),
+            Text(
+              'BikeX',
+              style: TextStyle(
+                color: AppTheme.textColor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),

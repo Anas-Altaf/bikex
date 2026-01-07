@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/core/widgets/primary_icon_btn.dart';
@@ -47,14 +48,18 @@ class LadderRow extends StatelessWidget {
               final iconName = item['icon']!;
               final isSelected = selectedCategory == categoryName;
 
-              return Padding(
-                padding: EdgeInsets.only(bottom: index * 12.0),
-                child: _buildCategoryButton(
-                  context: context,
-                  categoryName: categoryName,
-                  iconName: iconName,
-                  isSelected: isSelected,
-                  index: index,
+              return FadeInUp(
+                delay: Duration(milliseconds: 100 + (index * 80)),
+                duration: const Duration(milliseconds: 400),
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: index * 12.0),
+                  child: _buildCategoryButton(
+                    context: context,
+                    categoryName: categoryName,
+                    iconName: iconName,
+                    isSelected: isSelected,
+                    index: index,
+                  ),
                 ),
               );
             }).toList(),

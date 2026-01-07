@@ -7,3 +7,4 @@ export 'widgets/hero_card.dart';
 export 'widgets/ladder_row.dart';
 export 'widgets/product_card.dart';
 export 'widgets/products_list.dart';
+export 'widgets/search_overlay.dart';

@@ -3,6 +3,7 @@ import 'package:bikex/bikes/bikes.dart';
 import 'package:bikex/cart/cart.dart';
 import 'package:bikex/core/theme/app_theme.dart';
 import 'package:bikex/l10n/l10n.dart';
+import 'package:bikex/orders/orders.dart';
 import 'package:bikex/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +44,9 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) => CartCubit(cartRepo: cartRepo),
+          ),
+          BlocProvider(
+            create: (_) => OrdersCubit(),
           ),
         ],
         child: const AppView(),
