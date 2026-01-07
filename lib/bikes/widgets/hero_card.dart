@@ -32,7 +32,6 @@ class HeroCard extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/cycle_01.png',
-                      // width: 220,
                     ),
                     const Spacer(),
                     const Text(

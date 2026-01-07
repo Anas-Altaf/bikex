@@ -124,10 +124,15 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.home,
       name: 'home',
-      pageBuilder: (context, state) => _buildSlideTransition(
-        key: state.pageKey,
-        child: const HomePage(),
-      ),
+      pageBuilder: (context, state) {
+        // Get initial tab from query parameter (defaults to 0 - Bikes)
+        final tabStr = state.uri.queryParameters['tab'];
+        final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+        return _buildSlideTransition(
+          key: state.pageKey,
+          child: HomePage(initialTab: initialTab),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.productDetail,

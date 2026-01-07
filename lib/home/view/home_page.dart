@@ -21,7 +21,10 @@ const int _bikesTabIndex = 0;
 const double _tabBarHeight = 100;
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.initialTab = 0});
+
+  /// Initial tab index to show (0=Bikes, 1=Map, 2=Cart, 3=Profile, 4=Orders)
+  final int initialTab;
 
   static const List<Widget> _screens = [
     BikesPage(),
@@ -43,65 +46,80 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Navigation cubit is local to home page
     return BlocProvider(
-      create: (_) => NavigationCubit(),
+      create: (_) => NavigationCubit()..changeTab(initialTab),
       child: BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, navState) {
           final isCartTab = navState.currentIndex == _cartTabIndex;
           final isBikesTab = navState.currentIndex == _bikesTabIndex;
 
-          return Stack(
-            children: [
-              // Base background color
-              Container(color: AppTheme.backgroundColor),
+          return PopScope(
+            canPop: isBikesTab, // Only allow pop if on bikes tab
+            onPopInvokedWithResult: (didPop, result) {
+              if (!didPop) {
+                // Go to bikes tab instead of closing app
+                context.read<NavigationCubit>().changeTab(0);
+              }
+            },
+            child: Stack(
+              children: [
+                // Base background color
+                Container(color: AppTheme.backgroundColor),
 
-              // Diagonal gradient background - only on Bikes tab
-              if (isBikesTab)
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: DiagonalGradientPainter(),
+                // Diagonal gradient background - only on Bikes tab
+                // Wrapped in RepaintBoundary to ensure BackdropFilter works during scroll
+                if (isBikesTab)
+                  Positioned.fill(
+                    child: RepaintBoundary(
+                      child: CustomPaint(
+                        painter: DiagonalGradientPainter(),
+                        isComplex: true,
+                        willChange: false,
+                      ),
+                    ),
                   ),
-                ),
 
-              Scaffold(
-                backgroundColor: AppTheme.transparentColor,
-                appBar: CustomAppBar(
-                  title: _titles[navState.currentIndex],
-                  iconType: isCartTab
-                      ? AppBarIconType.back
-                      : AppBarIconType.search,
-                  onTap: isCartTab
-                      ? () {
-                          // Go back to bikes tab (index 0)
-                          context.read<NavigationCubit>().changeTab(0);
-                        }
-                      : null,
-                ),
-                body: SafeArea(
-                  top: false,
-                  child: Stack(
-                    children: [
-                      // Add bottom padding when tab bar is visible
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: isCartTab ? 0 : _tabBarHeight - 30,
+                Scaffold(
+                  backgroundColor: AppTheme.transparentColor,
+                  appBar: CustomAppBar(
+                    title: _titles[navState.currentIndex],
+                    iconType: isCartTab
+                        ? AppBarIconType.back
+                        : AppBarIconType.search,
+                    onTap: isCartTab
+                        ? () {
+                            // Go back to bikes tab (index 0)
+                            context.read<NavigationCubit>().changeTab(0);
+                          }
+                        : () {
+                            // Open search overlay
+                            SearchOverlay.show(context);
+                          },
+                  ),
+                  body: SafeArea(
+                    top: false,
+                    child: Stack(
+                      children: [
+                        // Always add bottom padding for tab bar
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: _tabBarHeight - 30,
+                          ),
+                          child: _screens[navState.currentIndex],
                         ),
-                        child: _screens[navState.currentIndex],
-                      ),
 
-                      // Animated bottom tab bar
-                      AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        left: 0,
-                        right: 0,
-                        bottom: isCartTab ? -_tabBarHeight : 0,
-                        child: const BottomTabBar(),
-                      ),
-                    ],
+                        // Bottom tab bar - always visible
+                        const Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: BottomTabBar(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

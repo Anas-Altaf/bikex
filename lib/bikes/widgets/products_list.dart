@@ -42,7 +42,7 @@ class ProductsList extends StatelessWidget {
                         );
 
                         // Staggered animation delay based on index
-                        final delay = Duration(milliseconds: 50 * index);
+                        final delay = Duration(milliseconds: 20 * index);
 
                         return FadeInUp(
                           delay: delay,

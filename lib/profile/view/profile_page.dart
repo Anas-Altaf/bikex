@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bikex/auth/auth.dart';
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/widgets/icon_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,18 +21,11 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Avatar with zoom animation
-              ZoomIn(
-                duration: const Duration(milliseconds: 500),
-                child: const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: AppTheme.primaryUpColor,
-                  child: Icon(
-                    Icons.person,
-                    size: 56,
-                    color: Colors.white,
-                  ),
-                ),
+              // Avatar with consistent IconCircle style
+              const IconCircle(
+                icon: Icons.person,
+                size: 100,
+                iconSize: 56,
               ),
               const SizedBox(height: 20),
               // Name with fade animation

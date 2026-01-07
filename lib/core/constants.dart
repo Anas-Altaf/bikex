@@ -9,7 +9,7 @@ class ProductDetailConstants {
 
   // Sheet size constraints
   /// Minimum sheet size (collapsed state) - 13% of screen height
-  static const double sheetMinSize = 0.13;
+  static const double sheetMinSize = 0.135;
   
   /// Maximum sheet size (expanded state) - 50% of screen height
   static const double sheetMaxSize = 0.5;
@@ -103,7 +103,7 @@ class ProductDetailConstants {
   static const double toggleButtonTopSpacing = 35;
   
   /// Bottom spacing after toggle buttons
-  static const double toggleButtonBottomSpacing = 40;
+  static const double toggleButtonBottomSpacing = 30;
 
   /// Helper method to calculate icon rotation based on sheet size
   static double calculateIconRotation(double sheetSize) {

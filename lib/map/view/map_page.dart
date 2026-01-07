@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bikex/core/theme/app_theme.dart';
+import 'package:bikex/core/widgets/icon_circle.dart';
 import 'package:flutter/material.dart';
 
 class MapPage extends StatelessWidget {
@@ -11,29 +12,8 @@ class MapPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Animated map icon
-          ElasticIn(
-            duration: const Duration(milliseconds: 800),
-            child: Container(
-              padding: const EdgeInsets.all(28),
-              decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primaryUpColor.withAlpha(80),
-                    blurRadius: 30,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.location_on,
-                size: 64,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // Animated map icon using reusable IconCircle
+          const IconCircle(icon: Icons.location_on),
           const SizedBox(height: 32),
           // Title
           FadeInUp(
